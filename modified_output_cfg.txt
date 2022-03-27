@@ -1,0 +1,129 @@
+Non-terminals: Q S I D SL ATT FK TNAME WH GB OB A X RES AGG_OPER T RES' PRED PRED' MORE RHS RES'' HPRED RES''' ATTR_NAMEORDER RES'''' ORDERING COLVAL TI CONST RES''''' DL DTNAME
+Terminals: ; sel_keyword * id , as fn_name ( ) from_keyword where_keyword not_keyword bin_log_op rel_op int_const str_const group_keyword having_keyword order_keyword asc_keyword desc_keyword insert_keyword into_keyword values_keyword del_keyword
+EPS = WH GB OB X RES RES' MORE RES'' RES''' RES'''' ORDERING RES'''''
+FIRST[Q] = sel_keyword insert_keyword del_keyword
+FIRST[S] = sel_keyword
+FIRST[I] = insert_keyword
+FIRST[D] = del_keyword
+FIRST[SL] = sel_keyword
+FIRST[ATT] = * id fn_name
+FIRST[FK] = from_keyword
+FIRST[TNAME] = id
+FIRST[WH] = where_keyword
+FIRST[GB] = group_keyword
+FIRST[OB] = order_keyword
+FIRST[A] = id fn_name
+FIRST[X] = as
+FIRST[RES] = ,
+FIRST[AGG_OPER] = fn_name
+FIRST[T] = * id
+FIRST[RES'] = ,
+FIRST[PRED] = id ( not_keyword
+FIRST[PRED'] = id
+FIRST[MORE] = bin_log_op
+FIRST[RHS] = id int_const str_const
+FIRST[RES''] = having_keyword
+FIRST[HPRED] = fn_name not_keyword
+FIRST[RES'''] = bin_log_op
+FIRST[ATTR_NAMEORDER] = id
+FIRST[RES''''] = ,
+FIRST[ORDERING] = asc_keyword desc_keyword
+FIRST[COLVAL] = ( values_keyword
+FIRST[TI] = , )
+FIRST[CONST] = int_const str_const
+FIRST[RES'''''] = ,
+FIRST[DL] = del_keyword
+FIRST[DTNAME] = id
+FOLLOW[Q] =
+FOLLOW[S] = ;
+FOLLOW[I] = ;
+FOLLOW[D] = ;
+FOLLOW[SL] = * id fn_name
+FOLLOW[ATT] = from_keyword
+FOLLOW[FK] = id
+FOLLOW[TNAME] = ; where_keyword group_keyword order_keyword
+FOLLOW[WH] = ; group_keyword order_keyword
+FOLLOW[GB] = ; order_keyword
+FOLLOW[OB] = ;
+FOLLOW[A] = , as from_keyword
+FOLLOW[X] = , from_keyword
+FOLLOW[RES] = from_keyword
+FOLLOW[AGG_OPER] = , as from_keyword rel_op
+FOLLOW[T] = )
+FOLLOW[RES'] = ; where_keyword group_keyword having_keyword order_keyword
+FOLLOW[PRED] = ; ) group_keyword order_keyword
+FOLLOW[PRED'] = ; ) bin_log_op group_keyword order_keyword
+FOLLOW[MORE] = ; ) group_keyword order_keyword
+FOLLOW[RHS] = ; ) bin_log_op group_keyword order_keyword
+FOLLOW[RES''] = ; order_keyword
+FOLLOW[HPRED] = ; order_keyword
+FOLLOW[RES'''] = ; order_keyword
+FOLLOW[ATTR_NAMEORDER] = ; ,
+FOLLOW[RES''''] = ;
+FOLLOW[ORDERING] = ; ,
+FOLLOW[COLVAL] = ;
+FOLLOW[TI] = int_const str_const
+FOLLOW[CONST] = , )
+FOLLOW[RES'''''] = )
+FOLLOW[DL] = from_keyword
+FOLLOW[DTNAME] = ; where_keyword
+PREDICT:
+Q ->  S ; : sel_keyword
+Q ->  I ; : insert_keyword
+Q ->  D ; : del_keyword
+S ->  SL ATT FK TNAME WH GB OB : sel_keyword
+SL ->  sel_keyword : sel_keyword
+ATT ->  * : *
+ATT ->  A X RES : id fn_name
+A ->  id : id
+A ->  AGG_OPER : fn_name
+RES -> epsilon : from_keyword
+RES ->  , A X RES : ,
+X -> epsilon : , from_keyword
+X ->  as id : as
+AGG_OPER ->  fn_name ( T ) : fn_name
+T ->  * : *
+T ->  id : id
+FK ->  from_keyword : from_keyword
+TNAME ->  id RES' : id
+RES' -> epsilon : ; where_keyword group_keyword having_keyword order_keyword
+RES' ->  , id RES' : ,
+WH -> epsilon : ; group_keyword order_keyword
+WH ->  where_keyword PRED : where_keyword
+PRED ->  PRED' MORE : id
+PRED ->  not_keyword PRED : not_keyword
+PRED ->  ( PRED ) : (
+MORE -> epsilon : ; ) group_keyword order_keyword
+MORE ->  bin_log_op PRED : bin_log_op
+PRED' ->  id rel_op RHS : id
+RHS ->  id : id
+RHS ->  int_const : int_const
+RHS ->  str_const : str_const
+GB -> epsilon : ; order_keyword
+GB ->  group_keyword id RES' RES'' : group_keyword
+RES'' -> epsilon : ; order_keyword
+RES'' ->  having_keyword HPRED : having_keyword
+HPRED ->  not_keyword AGG_OPER rel_op int_const RES''' : not_keyword
+HPRED ->  AGG_OPER rel_op int_const RES''' : fn_name
+RES''' -> epsilon : ; order_keyword
+RES''' ->  bin_log_op HPRED : bin_log_op
+OB -> epsilon : ;
+OB ->  order_keyword ATTR_NAMEORDER RES'''' : order_keyword
+ATTR_NAMEORDER ->  id ORDERING : id
+ORDERING -> epsilon : ; ,
+ORDERING ->  asc_keyword : asc_keyword
+ORDERING ->  desc_keyword : desc_keyword
+RES'''' -> epsilon : ;
+RES'''' ->  , ATTR_NAMEORDER RES'''' : ,
+I ->  insert_keyword into_keyword id COLVAL : insert_keyword
+COLVAL ->  ( id TI CONST ) : (
+COLVAL ->  values_keyword ( CONST RES''''' ) : values_keyword
+RES''''' -> epsilon : )
+RES''''' ->  , CONST RES''''' : ,
+TI ->  , id TI CONST , : ,
+TI ->  ) values_keyword ( : )
+CONST ->  int_const : int_const
+CONST ->  str_const : str_const
+D ->  DL FK DTNAME WH : del_keyword
+DL ->  del_keyword : del_keyword
+DTNAME ->  id : id
