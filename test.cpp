@@ -25,7 +25,7 @@ int main(int argc, char** argv)
             }
             query.push_back(s);
 		}
-        cout << query[0];
+        //cout << query[0];
     }
     else if(argc==2){
         // Creation of ifstream class object to read the file
