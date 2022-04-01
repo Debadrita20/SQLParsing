@@ -32,6 +32,8 @@ void generateTokens(dfa *myDFA,string query)
             i--;
             curState=myDFA->getStart();
         }
+        else if(lookaheadChar==' ')
+        continue;
         else   
         {
             //lexical error recovery code
