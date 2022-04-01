@@ -1,14 +1,15 @@
 
-#include <iostream>
-#include <string>
 #include <bits/stdc++.h>
+#include "dfa.hpp"
+#include "tokengenerator.cpp"
 
 using namespace std;
   
 int main(int argc, char** argv)
 {
     vector<string> query;
-    
+    dfa *myDFA=new dfa();
+    //initialise myDFA
     
     if(argc==1){
         cout<< "Enter no of the query" << endl;
@@ -53,7 +54,11 @@ int main(int argc, char** argv)
         
         // Close the file
         fin.close();
-
     }
+    for(int i=0;i<query.size();i++)
+    {
+        generateTokens(myDFA,query[i]);
+    }    
+    //parsing
     return 0;
 }
