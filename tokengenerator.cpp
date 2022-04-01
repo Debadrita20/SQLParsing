@@ -26,7 +26,7 @@ void generateTokens(dfa *myDFA,string query)
         }
         else if(curLexeme.size()>0)
         {
-            tokens.push_back(curLexeme);
+            tokens.push_back(myDFA->getState(curState).getTokenClass());
             curLexeme="";
             //for checking lookahead char again
             i--;
