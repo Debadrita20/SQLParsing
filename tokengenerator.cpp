@@ -21,12 +21,12 @@ void generateTokens(dfa *myDFA,string query)
         inputSymbol=(int)lookaheadChar;
         if(myDFA->canExtend(curState,inputSymbol))
         {
-            curState=myDFA->getState(curState).next(inputSymbol).getNo();
+            curState=myDFA->getState(curState)->next(inputSymbol).getNo();
             curLexeme=curLexeme+lookaheadChar;
         }
         else if(curLexeme.size()>0)
         {
-            tokens.push_back(myDFA->getState(curState).getTokenClass());
+            tokens.push_back(myDFA->getState(curState)->getTokenClass());
             curLexeme="";
             //for checking lookahead char again
             i--;

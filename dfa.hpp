@@ -5,7 +5,7 @@ using namespace std;
 
 class state
 {
-    private:
+    private: 
     int isFinal;
     int stateNo;
     string tokenclass;
@@ -38,6 +38,11 @@ class state
     {
         return stateNo;
     }
+
+    vector<pair<int,state>> getTransitions(){
+        return transitions;
+    }
+
     state next(int i)
     {
         int j;
@@ -78,14 +83,23 @@ class dfa
     {
         return startno;
     }
-    state getState(int n)
+    state * getState(int n)
     {
-        return statelist[n];
+        return &statelist[n];
     }
+
     int canExtend(int csn,int i)
     {
         int flag=0;
-        //code
+        state curState = statelist[csn];
+        for (int j = 0; j < curState.getTransitions().size(); j++){
+            if (curState.getTransitions()[j].first == i){
+                pair<int,state> t =  curState.getTransitions()[j];
+                cout << t.first << " " << t.second.getTokenClass() << endl;
+                flag = 1;
+                break;
+            }
+        }
         return flag;
     }
 };
