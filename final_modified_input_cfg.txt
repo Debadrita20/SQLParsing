@@ -10,7 +10,7 @@ A -> AGG_OPER
 RES -> epsilon
 RES -> , A X RES
 X -> epsilon
-X -> as id
+X -> as_keyword id
 AGG_OPER -> fn_name ( T )
 T -> * 
 T -> id
@@ -30,7 +30,7 @@ RHS -> id
 RHS -> int_const
 RHS -> str_const
 GB -> epsilon
-GB -> group_keyword id RES' RES''
+GB -> group_keyword by_keyword id RES' RES''
 RES'' -> epsilon
 RES'' -> having_keyword HPRED
 HPRED -> not_keyword AGG_OPER rel_op int_const RES'''
@@ -38,7 +38,7 @@ HPRED ->  AGG_OPER rel_op int_const RES'''
 RES''' -> epsilon
 RES''' -> bin_log_op HPRED
 OB -> epsilon
-OB -> order_keyword ATTR_NAMEORDER RES''''
+OB -> order_keyword by_keyword ATTR_NAMEORDER RES''''
 ATTR_NAMEORDER -> id ORDERING
 ORDERING -> epsilon
 ORDERING -> asc_keyword
