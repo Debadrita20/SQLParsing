@@ -30,6 +30,14 @@ int main(int argc, char** argv)
     myDFA -> addTransition(1, 2, '$');
     myDFA -> addTransition(1, 2, 2);
     myDFA -> addTransition(1, 2, 1);
+
+    myDFA -> addTransition(2, 2, '_');
+    myDFA -> addTransition(2, 2, '#');
+    myDFA -> addTransition(2, 2, '$');
+    myDFA -> addTransition(2, 2, 2);
+    myDFA -> addTransition(2, 2, 1);
+
+
     myDFA -> addTransition(0, 3, 2);
     myDFA -> addTransition(3, 3, 2);
     myDFA -> addTransition(3, 4, '.');
@@ -75,7 +83,6 @@ int main(int argc, char** argv)
         int count;
         cin >> count;
         for(int i=0;i<count;i++){
-            //cout <<"hii";
             string s;
             getchar();
             getline(cin, s);

@@ -94,8 +94,6 @@ class dfa
         state curState = statelist[csn];
         for (int j = 0; j < curState.getTransitions().size(); j++){
             if (curState.getTransitions()[j].first == i){
-                pair<int,state> t =  curState.getTransitions()[j];
-                cout << t.first << " " << t.second.getTokenClass() << endl;
                 flag = 1;
                 break;
             }

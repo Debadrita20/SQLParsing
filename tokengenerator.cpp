@@ -13,7 +13,7 @@ void generateTokens(dfa *myDFA,string query)
     for(int i=0;i<query.size();i++)
     {
         lookaheadChar=query[i];
-        if(lookaheadChar>='A'&&lookaheadChar<='Z')
+        if((lookaheadChar>='a'&&lookaheadChar<='z') || (lookaheadChar>='A'&&lookaheadChar<='Z'))
         inputSymbol=1;
         else if(lookaheadChar>='0'&&lookaheadChar<='9')
         inputSymbol=2;
