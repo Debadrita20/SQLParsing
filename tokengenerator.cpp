@@ -2,34 +2,63 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-void initialise_k(vector<string> kk)
+vector<string> keywords;
+vector<string> fnames;
+void initialise_k()
 {
-    kk.push_back("SELECT");
-    kk.push_back("FROM");
-    kk.push_back("WHERE");
-    kk.push_back("GROUP");
-    kk.push_back("BY");
-    kk.push_back("HAVING");
-    kk.push_back("ORDER");
-    kk.push_back("ASC");
-    kk.push_back("DESC");
-    kk.push_back("AS");
-    kk.push_back("INSERT");
-    kk.push_back("INTO");
-    kk.push_back("VALUES");
-    kk.push_back("DELETE");
+    keywords.push_back("SELECT");
+    keywords.push_back("FROM");
+    keywords.push_back("WHERE");
+    keywords.push_back("GROUP");
+    keywords.push_back("BY");
+    keywords.push_back("HAVING");
+    keywords.push_back("ORDER");
+    keywords.push_back("ASC");
+    keywords.push_back("DESC");
+    keywords.push_back("AS");
+    keywords.push_back("INSERT");
+    keywords.push_back("INTO");
+    keywords.push_back("VALUES");
+    keywords.push_back("DELETE");
 }
-void initialise_fn(vector<string> ff)
+void initialise_fn()
 {
-    ff.push_back("SUM");
-    ff.push_back("COUNT");
-    ff.push_back("MAX");
-    ff.push_back("MIN");
-    ff.push_back("AVG");
-    ff.push_back("STDDEV");
-    ff.push_back("VARIANCE");
-    //ff.push_back("FIRST");
-    //ff.push_back("LAST");
+    fnames.push_back("SUM");
+    fnames.push_back("COUNT");
+    fnames.push_back("MAX");
+    fnames.push_back("MIN");
+    fnames.push_back("AVG");
+    fnames.push_back("STDDEV");
+    fnames.push_back("VARIANCE");
+    //fnames.push_back("FIRST");
+    //fnames.push_back("LAST");
+}
+int checkFnNameList(string s)
+{
+    for(int i=0;i<fnames.size();i++)
+    {
+        if(s.compare(fnames[i])==0) return 1;
+    }
+    return 0;
+}
+int checkKeywordList(string s)
+{
+    for(int i=0;i<keywords.size();i++)
+    {
+        if(s.compare(keywords[i])==0) return 1;
+    }
+    return 0;
+}
+string toUpper(string s)
+{
+    string result;
+    for(int i=0;i<s.size();i++)
+    {
+        if(s[i]>='a'&&s[i]<='z')
+        result=result+(char)(s[i]-32);
+        else result=result+s[i];
+    }
+    return result;
 }
 void generateTokens(dfa *myDFA,string query)
 {
@@ -37,15 +66,25 @@ void generateTokens(dfa *myDFA,string query)
     int curState=myDFA->getStart();
     char lookaheadChar;
     int inputSymbol;
-    vector<string> keywords;
-    vector<string> fnames;
     vector<string> tokens;
-    initialise_k(keywords);
-    initialise_fn(fnames);
+    initialise_k();
+    initialise_fn();
+    /*for(int i=0;i<keywords.size();i++)
+    {
+        cout<<keywords[i]<<endl;
+    }
+    for(int i=0;i<fnames.size();i++)
+    {
+        cout<<fnames[i]<<endl;
+    }*/
+
     //code to open file for storing the tokens and token numbers
+
+    //cout<<query<<endl;
     for(int i=0;i<query.size();i++)
     {
         lookaheadChar=query[i];
+        
         if((lookaheadChar>='a'&&lookaheadChar<='z') || (lookaheadChar>='A'&&lookaheadChar<='Z'))
         inputSymbol=1;
         else if(lookaheadChar>='0'&&lookaheadChar<='9')
@@ -59,10 +98,21 @@ void generateTokens(dfa *myDFA,string query)
         }
         else if(curLexeme.size()>0)
         {
-            tokens.push_back(myDFA->getState(curState)->getTokenClass());
+            string tokenclass=myDFA->getState(curState)->getTokenClass();
+            int isKeyword=0,isFn_name=0;
+            if(tokenclass.compare("id")==0)
+            {
+                isKeyword=checkKeywordList(toUpper(curLexeme));
+                if(!isKeyword)
+                isFn_name=checkFnNameList(toUpper(curLexeme));
+            }
+            if(isKeyword) tokenclass=toUpper(curLexeme)+"_KEYWORD";
+            else if(isFn_name) tokenclass="fn_name";
+            tokens.push_back(tokenclass);  
+            //put lexeme in symbol table with the tokenclass and token/line number
+            //code          
             curLexeme="";
-            //for checking lookahead char again
-            i--;
+            i--;  //for checking lookahead char again
             curState=myDFA->getStart();
         }
         else if(lookaheadChar==' ')
@@ -72,5 +122,31 @@ void generateTokens(dfa *myDFA,string query)
             //lexical error recovery code
             cout<<"Unidentified character in SQL query: "<<lookaheadChar<<endl;
         }
+    }
+    //following code is for the last lexeme at the end of the query which is in current lexeme when the loop ends
+    if(curLexeme.size()>0)
+    {
+        string tokenclass=myDFA->getState(curState)->getTokenClass();
+        int isKeyword=0,isFn_name=0;
+        if(tokenclass.compare("id")==0)
+        {
+            isKeyword=checkKeywordList(toUpper(curLexeme));
+            if(!isKeyword)
+            isFn_name=checkFnNameList(toUpper(curLexeme));
+        }
+        if(isKeyword) tokenclass=toUpper(curLexeme)+"_KEYWORD";
+        else if(isFn_name) tokenclass="fn_name";
+        tokens.push_back(tokenclass);  
+        //put lexeme in symbol table with the tokenclass and token/line number
+        //code          
+    }
+    else   
+    {
+        //lexical error recovery code
+        cout<<"Unidentified character in SQL query: "<<lookaheadChar<<endl;
+    }
+    for(int i=0;i<tokens.size();i++)
+    {
+        cout<<tokens[i]<<endl;
     }
 }
