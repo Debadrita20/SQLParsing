@@ -5,9 +5,130 @@
 #include "dfa_initialize.hpp"
 
 using namespace std;
-  
+int firstsemioccur(string input){
+    for(int i=0;i<input.size();i++){
+        if(input[i]==';')
+            return i;
+    }
+    return -1;
+}
+string removeextraspace(string str){
+    string nstr;
+    for(int i=0; i<str.length();  ){
+        
+       
+        if(str[i] == ' '){
+            /* 
+              *do not include the white space, if-
+              *it is at the trailing or leading position
+            */
+            if(i==0 || i==str.length()-1){
+                i++;
+                continue;
+            }
+            
+            /*
+              *if space is inbetween then skip it-
+              *except the last occurrence
+            */
+            while(str[i+1] == ' ')
+                i++;
+        }
+        
+        //concatenate the character to the new string
+        nstr += str[i++];
+    }
+    return nstr;
+}
+string erasesubstr(string s,int k,int j){
+  //  cout<<"in erase substr : "<<s<<s.size()<<k<<" "<<j<<"  "<<s.size()-j-1;
+
+    string res;
+    for(int i=0;i<k;i++)
+        res+=s[i];
+    int i=0,x=j;
+    for( i=0;i<(s.size()-x-1);i++){
+        res+=s[j+1];
+        j++;
+    }
+  //  cout<<"i: "<<i<<"res:  "<< res;
+    return res;
+}
+void remove_multiline_comment_from_middle(vector<string>& query){
+    //cout<<query.size()<<endl;
+    for(int i=0;i<query.size();i++){
+        int k=0;
+      int p=0;
+        for(int j=0;j<query[i].size();){
+            if((int)query[i][j]==47 && (int)query[i][j+1]==42){
+               
+                k=j;
+                
+                while(!((int)query[i][j]==42 && (int)query[i][j+1]==47)){
+                    if(j>=query[i].size()-2)
+                        break;
+                    j++;
+                    
+                }
+                //j=4
+                query[i]=erasesubstr(query[i],k, j+1);
+               // cout<<k<<endl<<j+1<<endl;
+                j=k+1;
+            }
+            else{
+                j++;
+            }
+            /*else if(prevflag==1){
+                while((int)query[i][j]!=42 && (int)query[i][j]!=47)
+                {
+                    j++;
+                }
+                if(j==query[i].size()) prevflag=1;
+                else prevflag=-1;
+                query[i]=erasesubstr(query[i],0, j);
+            }*/
+        }
+    }
+    //cout<<query[0]<<endl;
+    
+}
+
+void remove_multiline_comment_from_start(vector<string>& query){
+    int f=0;
+    for(int i=0;i<query.size();i++){
+        for(int j=0;j<query[i].size();j++){
+            if((int)query[i][j]==47 && (int)query[i][j+1]==42)
+                f=1;
+            if((int)query[i][j]==42 && (int)query[i][j+1]==47 && f!=1)
+                query[i]=erasesubstr(query[i],0, j+1);
+        }
+    }
+}
+void remove_multiline_comment_from_end(vector<string>& query){
+    int flag=0,x=-1;
+    for(int i=0;i<query.size();i++){
+        for(int j=0;j<query[i].size();j++){
+            if((int)query[i][j]==47 && (int)query[i][j+1]==42){
+                x=i;
+                query[i]=erasesubstr(query[i],j, query[i].size()-1);
+                flag=1;
+                break;
+            }
+        }
+        if(flag==1)
+            break;
+    }
+  //  cout<<x;
+    int c=0;
+    while(x!=-1 && x<query.size()-1){
+        c++;
+        query.pop_back();
+    }
+   // cout<<"count: " <<c;
+}
 int main(int argc, char** argv)
 {
+    string ans;
     vector<string> query;
     dfa *myDFA=new dfa();
 
@@ -16,6 +137,7 @@ int main(int argc, char** argv)
 
     
     if(argc==1){
+<<<<<<< Updated upstream
         cout<< "Enter no of the query" << endl;
         int count;
         cin >> count;
@@ -26,42 +148,134 @@ int main(int argc, char** argv)
             int found = s.find("--");
             if (found != string::npos){
                 s.erase(s.begin() + found, s.end());
+=======
+        
+        
+            //cout <<"hii";
+
+            string input,s;
+            char c,prev;
+            int i=0;
+            while (1)
+            {
+                getline(cin,input);
+
+                
+                //cout<< input<<endl;
+                
+                int found = input.find("--");
+                if (found != string::npos){
+                    input.erase(input.begin() + found, input.end());
+                }
+                
+                if(i>0)
+                    s += (" "+input);
+                else
+                    s+=input;
+                i++;
+                int x=firstsemioccur(input);
+                if(x!=-1){
+                   // input=input.substr(0,x-1);
+                    break;
+                }
+>>>>>>> Stashed changes
             }
-            query.push_back(s);
-		}
-        //cout << query[0];
+            
+            s=removeextraspace(s);
+           // cout<< s<<endl;
+
+            ans+=s;
+           
+        //cout << ans;
     }
     else if(argc==2){
         // Creation of ifstream class object to read the file
-        ifstream fin;
+        ifstream input_file(argv[1]);
         string line;
         // by default open mode = ios::in mode
-        fin.open(argv[1]);
-       
+       // fin.open(argv[1]);
+       if (!input_file.is_open()) {
+        cerr << "Could not open the file - '"
+             << argv[1] << "'" << endl;
+        return EXIT_FAILURE;
+         }
+
         
-        
+        int i=0;
+        string s;
         // Execute a loop until EOF (End of File)
-        while (fin) {
-    
+        int cx=0;
+        while (getline(input_file, line)) {
+            cx++;
             // Read a Line from File
-            getline(fin, line);
-            //cout<<line;
+          //  getline(fin, line);
+           // cout<<line<<endl;
             int found = line.find("--");
             if (found != string::npos){
                 line.erase(line.begin() + found, line.end());
             }
-            if(line!="")
-                query.push_back(line);
-            //cout<<line<<endl;
+           // cout<<line;
+            if(i>0){
+                //cout<<"inside i>0";
+                s += (" "+line);
+            }
+            else
+                s+=line;
+           // cout<<s<<"1 ";
+            i++;
+            int x=firstsemioccur(line);
+            //cout<< "x::"<<x<<endl;
+            if(x!=-1){
+                //cout<<"coco\n";
+                s=removeextraspace(s);
+                ans+=s;
+               // cout<<s<<endl;
+                s="";
+                i=0;
+            }
+           // if(line!="")
+              //  query.push_back(line);
+            
         }
         
         // Close the file
-        fin.close();
+        input_file.close();
+       // cout<<"cx:        "<<cx<<endl;
     }
-    for(int i=0;i<query.size();i++)
+   // cout<<"abc";
+    query.push_back(ans);
+   // cout<<"ans :   "<<ans<<endl;
+    remove_multiline_comment_from_middle(query);
+   // cout<<query.size();
+    
+    remove_multiline_comment_from_start(query);
+    /*  for(int i=0;i<query.size();i++)
     {
-        generateTokens(myDFA,query[i]);
-    }    
+        //generateTokens(myDFA,query[i]);
+        cout<< query[i]<<endl;
+    }*/
+    remove_multiline_comment_from_end(query);
+    //cout<<"sds"<<endl;
+    //cout<<"Dc"<<endl;
+    vector<string> result;
+    string temp;
+    for(int i=0;i<query[0].size();i++){
+       // cout<<query[0][i];
+        temp.push_back(query[0][i]);
+        if(query[0][i]==';')   {
+            result.push_back(temp);
+            temp="";
+        }
+    }
+   /* for(int i=0;i<query.size();i++)
+    {
+        //generateTokens(myDFA,query[i]);
+        cout<< query[i]<<endl;
+    }*/
+  //  cout<<result.size();  
+    for(int i=0;i<result.size();i++){
+        cout<<result[i]<<endl;
+    }
     //parsing
     return 0;
 }
