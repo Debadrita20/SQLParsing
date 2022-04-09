@@ -137,18 +137,6 @@ int main(int argc, char** argv)
 
     
     if(argc==1){
-<<<<<<< Updated upstream
-        cout<< "Enter no of the query" << endl;
-        int count;
-        cin >> count;
-        for(int i=0;i<count;i++){
-            string s;
-            getchar();
-            getline(cin, s);
-            int found = s.find("--");
-            if (found != string::npos){
-                s.erase(s.begin() + found, s.end());
-=======
         
         
             //cout <<"hii";
@@ -178,7 +166,6 @@ int main(int argc, char** argv)
                    // input=input.substr(0,x-1);
                     break;
                 }
->>>>>>> Stashed changes
             }
             
             s=removeextraspace(s);
@@ -245,6 +232,7 @@ int main(int argc, char** argv)
    // cout<<"abc";
     query.push_back(ans);
    // cout<<"ans :   "<<ans<<endl;
+   //removing multiline comments
     remove_multiline_comment_from_middle(query);
    // cout<<query.size();
     
@@ -267,14 +255,15 @@ int main(int argc, char** argv)
             temp="";
         }
     }
-   /* for(int i=0;i<query.size();i++)
-    {
-        //generateTokens(myDFA,query[i]);
-        cout<< query[i]<<endl;
-    }*/
-  //  cout<<result.size();  
-    for(int i=0;i<result.size();i++){
+    //  cout<<result.size();  
+    /*for(int i=0;i<result.size();i++){
         cout<<result[i]<<endl;
+    }*/
+    //token extraction and identification
+    for(int i=0;i<query.size();i++)
+    {
+        generateTokens(myDFA,query[i]);
+        cout<< query[i]<<endl;
     }
     //parsing
     return 0;
