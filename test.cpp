@@ -41,8 +41,6 @@ string removeextraspace(string str){
     return nstr;
 }
 string erasesubstr(string s,int k,int j){
-  //  cout<<"in erase substr : "<<s<<s.size()<<k<<" "<<j<<"  "<<s.size()-j-1;
-
     string res;
     for(int i=0;i<k;i++)
         res+=s[i];
@@ -51,11 +49,9 @@ string erasesubstr(string s,int k,int j){
         res+=s[j+1];
         j++;
     }
-  //  cout<<"i: "<<i<<"res:  "<< res;
     return res;
 }
 void remove_multiline_comment_from_middle(vector<string>& query){
-    //cout<<query.size()<<endl;
     for(int i=0;i<query.size();i++){
         int k=0;
       int p=0;
@@ -72,59 +68,13 @@ void remove_multiline_comment_from_middle(vector<string>& query){
                 }
                 //j=4
                 query[i]=erasesubstr(query[i],k, j+1);
-               // cout<<k<<endl<<j+1<<endl;
                 j=k+1;
             }
             else{
                 j++;
             }
-            /*else if(prevflag==1){
-                while((int)query[i][j]!=42 && (int)query[i][j]!=47)
-                {
-                    j++;
-                }
-                if(j==query[i].size()) prevflag=1;
-                else prevflag=-1;
-                query[i]=erasesubstr(query[i],0, j);
-            }*/
         }
     }
-    //cout<<query[0]<<endl;
-    
-}
-
-void remove_multiline_comment_from_start(vector<string>& query){
-    int f=0;
-    for(int i=0;i<query.size();i++){
-        for(int j=0;j<query[i].size();j++){
-            if((int)query[i][j]==47 && (int)query[i][j+1]==42)
-                f=1;
-            if((int)query[i][j]==42 && (int)query[i][j+1]==47 && f!=1)
-                query[i]=erasesubstr(query[i],0, j+1);
-        }
-    }
-}
-void remove_multiline_comment_from_end(vector<string>& query){
-    int flag=0,x=-1;
-    for(int i=0;i<query.size();i++){
-        for(int j=0;j<query[i].size();j++){
-            if((int)query[i][j]==47 && (int)query[i][j+1]==42){
-                x=i;
-                query[i]=erasesubstr(query[i],j, query[i].size()-1);
-                flag=1;
-                break;
-            }
-        }
-        if(flag==1)
-            break;
-    }
-  //  cout<<x;
-    int c=0;
-    while(x!=-1 && x<query.size()-1){
-        c++;
-        query.pop_back();
-    }
-   // cout<<"count: " <<c;
 }
 int main(int argc, char** argv)
 {
@@ -224,27 +174,13 @@ int main(int argc, char** argv)
               //  query.push_back(line);
             
         }
-        
         // Close the file
         input_file.close();
-       // cout<<"cx:        "<<cx<<endl;
     }
-   // cout<<"abc";
     query.push_back(ans);
-   // cout<<"ans :   "<<ans<<endl;
-   //removing multiline comments
     remove_multiline_comment_from_middle(query);
-   // cout<<query.size();
-    
-    remove_multiline_comment_from_start(query);
-    /*  for(int i=0;i<query.size();i++)
-    {
-        //generateTokens(myDFA,query[i]);
-        cout<< query[i]<<endl;
-    }*/
-    remove_multiline_comment_from_end(query);
-    //cout<<"sds"<<endl;
-    //cout<<"Dc"<<endl;
+  //  remove_multiline_comment_from_start(query);
+  //  remove_multiline_comment_from_end(query);
     vector<string> result;
     string temp;
     for(int i=0;i<query[0].size();i++){
@@ -255,7 +191,6 @@ int main(int argc, char** argv)
             temp="";
         }
     }
-    //  cout<<result.size();  
     for(int i=0;i<result.size();i++){
         generateTokens(myDFA,result[i]);
         cout<<result[i]<<endl;
