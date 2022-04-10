@@ -263,7 +263,7 @@ int main(int argc, char** argv)
     for(int i=0;i<query.size();i++)
     {
         generateTokens(myDFA,query[i]);
-        cout<< query[i]<<endl;
+        //cout<< query[i]<<endl;
     }
     //parsing
     return 0;

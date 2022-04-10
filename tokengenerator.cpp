@@ -1,38 +1,11 @@
 
 #include <bits/stdc++.h>
+#include "keyword_fn_list_initialise.hpp"
 
 using namespace std;
 vector<string> keywords;
 vector<string> fnames;
-void initialise_k()
-{
-    keywords.push_back("SELECT");
-    keywords.push_back("FROM");
-    keywords.push_back("WHERE");
-    keywords.push_back("GROUP");
-    keywords.push_back("BY");
-    keywords.push_back("HAVING");
-    keywords.push_back("ORDER");
-    keywords.push_back("ASC");
-    keywords.push_back("DESC");
-    keywords.push_back("AS");
-    keywords.push_back("INSERT");
-    keywords.push_back("INTO");
-    keywords.push_back("VALUES");
-    keywords.push_back("DELETE");
-}
-void initialise_fn()
-{
-    fnames.push_back("SUM");
-    fnames.push_back("COUNT");
-    fnames.push_back("MAX");
-    fnames.push_back("MIN");
-    fnames.push_back("AVG");
-    fnames.push_back("STDDEV");
-    fnames.push_back("VARIANCE");
-    //fnames.push_back("FIRST");
-    //fnames.push_back("LAST");
-}
+
 int checkFnNameList(string s)
 {
     for(int i=0;i<fnames.size();i++)
@@ -67,8 +40,8 @@ void generateTokens(dfa *myDFA,string query)
     char lookaheadChar;
     int inputSymbol;
     vector<string> tokens;
-    initialise_k();
-    initialise_fn();
+    initialise_k(&keywords);
+    initialise_fn(&fnames);
     /*for(int i=0;i<keywords.size();i++)
     {
         cout<<keywords[i]<<endl;
@@ -79,8 +52,9 @@ void generateTokens(dfa *myDFA,string query)
     }*/
 
     //code to open file for storing the tokens and token numbers
-
+    ofstream fp("tokens.txt");
     //cout<<query<<endl;
+    query=query+" ";
     for(int i=0;i<query.size();i++)
     {
         lookaheadChar=query[i];
@@ -99,6 +73,17 @@ void generateTokens(dfa *myDFA,string query)
         else if(curLexeme.size()>0)
         {
             string tokenclass=myDFA->getState(curState)->getTokenClass();
+            if(tokenclass=="error")
+            {
+                if(curState==4)
+                cout<<"Expected digit after ."<<""<<endl;
+                else if(curState==6||curState==7)
+                cout<<"Expected closing ' after "<<curLexeme[curLexeme.size()-1]<<""<<endl;
+                curLexeme="";
+                i--;  //for checking lookahead char again
+                curState=myDFA->getStart();
+                continue;
+            }
             int isKeyword=0,isFn_name=0;
             if(tokenclass.compare("id")==0)
             {
@@ -109,6 +94,7 @@ void generateTokens(dfa *myDFA,string query)
             if(isKeyword) tokenclass=toUpper(curLexeme)+"_KEYWORD";
             else if(isFn_name) tokenclass="fn_name";
             tokens.push_back(tokenclass);  
+            fp<<tokens.size()<<" "<<tokenclass<<"\n";   //add line number,col number
             //put lexeme in symbol table with the tokenclass and token/line number
             //code          
             curLexeme="";
@@ -120,33 +106,13 @@ void generateTokens(dfa *myDFA,string query)
         else   
         {
             //lexical error recovery code
-            cout<<"Unidentified character in SQL query: "<<lookaheadChar<<endl;
+            cout<<"Unidentified character in SQL query: "<<lookaheadChar<<""<<endl;
+            curState=myDFA->getStart();
         }
-    }
-    //following code is for the last lexeme at the end of the query which is in current lexeme when the loop ends
-    if(curLexeme.size()>0)
-    {
-        string tokenclass=myDFA->getState(curState)->getTokenClass();
-        int isKeyword=0,isFn_name=0;
-        if(tokenclass.compare("id")==0)
-        {
-            isKeyword=checkKeywordList(toUpper(curLexeme));
-            if(!isKeyword)
-            isFn_name=checkFnNameList(toUpper(curLexeme));
-        }
-        if(isKeyword) tokenclass=toUpper(curLexeme)+"_KEYWORD";
-        else if(isFn_name) tokenclass="fn_name";
-        tokens.push_back(tokenclass);  
-        //put lexeme in symbol table with the tokenclass and token/line number
-        //code          
-    }
-    else   
-    {
-        //lexical error recovery code
-        cout<<"Unidentified character in SQL query: "<<lookaheadChar<<endl;
     }
     for(int i=0;i<tokens.size();i++)
     {
         cout<<tokens[i]<<endl;
     }
+    fp.close();
 }

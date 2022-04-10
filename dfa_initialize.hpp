@@ -30,6 +30,7 @@ void initialiseDFA(dfa *myDFA){
 
     myDFA -> addTransition(0, 3, 2);
     myDFA -> addTransition(3, 3, 2);
+    myDFA -> addTransition(0, 4, '.');
     myDFA -> addTransition(3, 4, '.');
     myDFA -> addTransition(4, 5, 2);
     myDFA -> addTransition(5, 5, 2);
@@ -38,6 +39,7 @@ void initialiseDFA(dfa *myDFA){
     myDFA -> addTransition(7, 7, 2);     
     myDFA -> addTransition(6, 7, 1);
     myDFA -> addTransition(7, 7, 1);
+    myDFA -> addTransition(6, 8, '\'');
     myDFA -> addTransition(7, 8, '\'');            
     myDFA -> addTransition(0, 9, '<');
     myDFA -> addTransition(9, 11, '=');
