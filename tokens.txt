@@ -1,5 +1,2 @@
-1 SELECT_KEYWORD
-2 *
-3 FROM_KEYWORD
-4 id
-5 ;
+1 id
+2 ;

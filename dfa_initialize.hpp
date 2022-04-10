@@ -58,13 +58,13 @@ void initialiseDFA(dfa *myDFA){
 
     myDFA->getState(1)->setTokenClass("id");
     myDFA->getState(2)->setTokenClass("id");
-    myDFA->getState(8)->setTokenClass("string const");
-    myDFA->getState(3)->setTokenClass("integer const");
-    myDFA->getState(5)->setTokenClass("float const");
-    myDFA->getState(9)->setTokenClass("relational operator");
-    myDFA->getState(10)->setTokenClass("relational operator");
-    myDFA->getState(11)->setTokenClass("relational operator");
-    myDFA->getState(17)->setTokenClass("relational operator");
+    myDFA->getState(8)->setTokenClass("string_const");
+    myDFA->getState(3)->setTokenClass("integer_const");
+    myDFA->getState(5)->setTokenClass("float_const");
+    myDFA->getState(9)->setTokenClass("relational_operator");
+    myDFA->getState(10)->setTokenClass("relational_operator");
+    myDFA->getState(11)->setTokenClass("relational_operator");
+    myDFA->getState(17)->setTokenClass("relational_operator");
     myDFA->getState(12)->setTokenClass("*");
     myDFA->getState(13)->setTokenClass(",");
     myDFA->getState(14)->setTokenClass("(");

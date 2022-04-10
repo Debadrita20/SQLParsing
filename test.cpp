@@ -196,7 +196,7 @@ int main(int argc, char** argv)
         cout<<result[i]<<endl;
     }
     //token extraction and identification
-   /* for(int i=0;i<query.size();i++)
+    for(int i=0;i<query.size();i++)
     {
         generateTokens(myDFA,query[i]);
         //cout<< query[i]<<endl;
