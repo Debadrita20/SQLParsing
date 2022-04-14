@@ -142,14 +142,14 @@ int main(int argc, char** argv)
             }
             cout<<"\n\n\n";
          //   cout<< pos.size()<<"    xyz";
-                for(auto f=pos0.begin();f!=pos0.end();f++){
+              /*  for(auto f=pos0.begin();f!=pos0.end();f++){
                     cout<<f->first<<"    ";
                     while(!f->second.empty()){
                         cout<<f->second.front().first<<" "<<f->second.front().second<<"    ";
                         f->second.pop();
                     }
                     cout<<endl;
-                }
+                }*/
             pos.push_back(pos0);
             s=removeextraspace(s);
            // cout<< s<<endl;
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
          }
 
-        unordered_map<char,queue<pair<int,int>>> pos0,temp;
+        unordered_map<char,queue<pair<int,int>>> pos0;
         int i=0;
         string s;
         // Execute a loop until EOF (End of File)
@@ -202,15 +202,8 @@ int main(int argc, char** argv)
                     open=0;
                 }
                 if(line[j1]==';' && open==0){
-                    for(auto f=pos0.begin();f!=pos0.end();f++){
-                        cout<<f->first<<"    ";
-                        while(!f->second.empty()){    
-                            cout<<f->second.front().first<<" "<<f->second.front().second<<"    ";
-                            f->second.pop();
-                        }
-                        cout<<endl;
-                    }
-                    cout<<"\n\n\n";
+                  
+                  
                     pos.push_back(pos0);
                     pos0.clear();
                 }
@@ -220,15 +213,8 @@ int main(int argc, char** argv)
                 pos0[line.back()].push({cx,line.size()});
                 if(line.back()==';'){
                     pos.push_back(pos0);
-                    for(auto f=pos0.begin();f!=pos0.end();f++){
-                        cout<<f->first<<"    ";
-                        while(!f->second.empty()){
-                            cout<<f->second.front().first<<" "<<f->second.front().second<<"    ";
-                            f->second.pop();
-                        }
-                        cout<<endl;
-                    }
-                    cout<<"\n\n\n";
+                    
+                   // cout<<"\n\n\n";
                     pos0.clear();
                 }
             }
@@ -270,7 +256,7 @@ int main(int argc, char** argv)
         }*/
         // Close the file
         input_file.close();
-    }
+        }
     query.push_back(ans);
     remove_multiline_comment_from_middle(query);
   //  remove_multiline_comment_from_start(query);
@@ -286,15 +272,15 @@ int main(int argc, char** argv)
         }
     }
     for(int i=0;i<result.size();i++){
-        generateTokens(myDFA,result[i]);
-        cout<<result[i]<<endl;
+        generateTokens(myDFA,result[i],pos[i]);
+     //   cout<<result[i]<<endl;
     }
     //token extraction and identification
-    for(int i=0;i<query.size();i++)
+   /* for(int i=0;i<query.size();i++)
     {
         generateTokens(myDFA,query[i]);
         //cout<< query[i]<<endl;
-    }
+    }*/
     //parsing
     return 0;
 }
