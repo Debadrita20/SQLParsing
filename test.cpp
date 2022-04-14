@@ -5,6 +5,7 @@
 #include "dfa_initialize.hpp"
 
 using namespace std;
+vector<unordered_map<char,queue<pair<int,int>>>> pos;
 int firstsemioccur(string input){
     for(int i=0;i<input.size();i++){
         if(input[i]==';')
@@ -81,11 +82,11 @@ int main(int argc, char** argv)
     string ans;
     vector<string> query;
     dfa *myDFA=new dfa();
-
+    
     //initialise myDFA
     initialiseDFA(myDFA);
 
-    
+    unordered_map<char,queue<pair<int,int>>> pos0;
     if(argc==1){
         
         
@@ -93,11 +94,11 @@ int main(int argc, char** argv)
 
             string input,s;
             char c,prev;
-            int i=0;
+            int i=0,row=0,open=0;
             while (1)
             {
                 getline(cin,input);
-
+                row++;
                 
                 //cout<< input<<endl;
                 
@@ -105,7 +106,29 @@ int main(int argc, char** argv)
                 if (found != string::npos){
                     input.erase(input.begin() + found, input.end());
                 }
-                
+                if(input.size()==0) continue;
+                int j1;
+                for(j1=0;j1<input.size()-1;  ){
+                    if(input[j1]=='/' && input[j1+1]=='*'){
+                        open=1;
+                    }
+                    if(open==0 && input[j1]!=' '){
+                        pos0[input[j1]].push({row,j1+1});
+                    }
+                    if(input[j1]=='*' && input[j1+1]=='/' && open==1){
+                        open=2;
+                    }
+                    if(input[j1]=='/' && open==2){
+                        open=0;
+                    }
+                    j1++;
+                }
+                if(open==0 && input.back()!=' '){
+                    pos0[input.back()].push({row,input.size()});
+                }
+                if(input[input.size()-1]=='/' && open==2){
+                        open=0;
+                }
                 if(i>0)
                     s += (" "+input);
                 else
@@ -117,7 +140,17 @@ int main(int argc, char** argv)
                     break;
                 }
             }
-            
+            cout<<"\n\n\n";
+         //   cout<< pos.size()<<"    xyz";
+                for(auto f=pos0.begin();f!=pos0.end();f++){
+                    cout<<f->first<<"    ";
+                    while(!f->second.empty()){
+                        cout<<f->second.front().first<<" "<<f->second.front().second<<"    ";
+                        f->second.pop();
+                    }
+                    cout<<endl;
+                }
+            pos.push_back(pos0);
             s=removeextraspace(s);
            // cout<< s<<endl;
 
@@ -137,11 +170,11 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
          }
 
-        
+        unordered_map<char,queue<pair<int,int>>> pos0,temp;
         int i=0;
         string s;
         // Execute a loop until EOF (End of File)
-        int cx=0;
+        int cx=0,open=0;
         while (getline(input_file, line)) {
             cx++;
             // Read a Line from File
@@ -150,6 +183,57 @@ int main(int argc, char** argv)
             int found = line.find("--");
             if (found != string::npos){
                 line.erase(line.begin() + found, line.end());
+            }
+            int j1; 
+            if(line.size()==0){
+                continue;
+            }
+            for(j1=0;j1<line.size()-1;  ){
+                if(line[j1]=='/' && line[j1+1]=='*'){
+                    open=1;
+                }
+                if(open==0 && line[j1]!=' '){
+                    pos0[line[j1]].push({cx,j1+1});
+                }
+                if(line[j1]=='*' && line[j1+1]=='/' && open==1){
+                    open=2;
+                }
+                if(line[j1]=='/' && open==2){
+                    open=0;
+                }
+                if(line[j1]==';' && open==0){
+                    for(auto f=pos0.begin();f!=pos0.end();f++){
+                        cout<<f->first<<"    ";
+                        while(!f->second.empty()){    
+                            cout<<f->second.front().first<<" "<<f->second.front().second<<"    ";
+                            f->second.pop();
+                        }
+                        cout<<endl;
+                    }
+                    cout<<"\n\n\n";
+                    pos.push_back(pos0);
+                    pos0.clear();
+                }
+                j1++;
+            }
+            if(open==0 && line.back()!=' '){
+                pos0[line.back()].push({cx,line.size()});
+                if(line.back()==';'){
+                    pos.push_back(pos0);
+                    for(auto f=pos0.begin();f!=pos0.end();f++){
+                        cout<<f->first<<"    ";
+                        while(!f->second.empty()){
+                            cout<<f->second.front().first<<" "<<f->second.front().second<<"    ";
+                            f->second.pop();
+                        }
+                        cout<<endl;
+                    }
+                    cout<<"\n\n\n";
+                    pos0.clear();
+                }
+            }
+            if(line[line.size()-1]=='/' && open==2){
+                open=0;
             }
            // cout<<line;
             if(i>0){
@@ -174,6 +258,16 @@ int main(int argc, char** argv)
               //  query.push_back(line);
             
         }
+        /*for(int l=0;l<pos.size();l++){
+            for(auto k=pos[l].begin();k!=pos[l].end();k++){
+                cout<<k->first<<"   ";
+                while(k->second.empty()){
+                    cout<<k->second.front().first<<" "<<k->second.front().second<<endl;
+                    k->second.pop();
+                }
+            }
+            cout<<endl;
+        }*/
         // Close the file
         input_file.close();
     }
