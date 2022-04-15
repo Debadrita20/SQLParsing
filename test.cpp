@@ -6,6 +6,7 @@
 
 using namespace std;
 vector<unordered_map<char,queue<pair<int,int>>>> pos;
+unordered_map<string,stack<pair<string,pair<int,int>>>> symbol_table;
 int firstsemioccur(string input){
     for(int i=0;i<input.size();i++){
         if(input[i]==';')
@@ -282,11 +283,37 @@ int main(int argc, char** argv)
             temp="";
         }
     }
-    cout<<pos.size();
     for(int i=0;i<result.size();i++){
-        generateTokens(myDFA,result[i],pos[i]);
+        generateTokens(myDFA,result[i],pos[i],symbol_table);
      //   cout<<result[i]<<endl;
     }
+    ofstream fout;
+    string line;
+    fout.open("SymbolTable.txt");
+    while (fout) {
+        fout<<"The symbol table is:\n";
+        for(auto k=symbol_table.begin();k!=symbol_table.end();k++){
+            fout<<k->first<<"   ";
+            int space=0;
+            while(!k->second.empty()){
+                if(space>0){
+                    int r=(k->first).size();
+                    r+=3;
+                    while(r--){
+                        fout<<" ";
+                    }
+                }
+                fout<<k->second.top().first<<"  "<<k->second.top().second.first<<" "<<k->second.top().second.second<<endl;
+                k->second.pop();
+                space++;
+            }
+            fout<<"\n";
+        }
+        break;
+    }
+    fout.close();
+
+
     //token extraction and identification
    /* for(int i=0;i<query.size();i++)
     {

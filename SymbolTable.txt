@@ -1,0 +1,11 @@
+The symbol table is:
+;   ;  7 4
+
+from   FROM_KEYWORD  3 10
+
+abc   id  7 1
+
+select   SELECT_KEYWORD  3 1
+
+*   *  3 8
+
