@@ -140,9 +140,9 @@ int main(int argc, char** argv)
                     break;
                 }
             }
-            cout<<"\n\n\n";
+         //   cout<<"\n\n\n";
          //   cout<< pos.size()<<"    xyz";
-              /*  for(auto f=pos0.begin();f!=pos0.end();f++){
+          /*    for(auto f=pos0.begin();f!=pos0.end();f++){
                     cout<<f->first<<"    ";
                     while(!f->second.empty()){
                         cout<<f->second.front().first<<" "<<f->second.front().second<<"    ";
@@ -213,7 +213,15 @@ int main(int argc, char** argv)
                 pos0[line.back()].push({cx,line.size()});
                 if(line.back()==';'){
                     pos.push_back(pos0);
-                    
+                  /*  for(auto f=pos0.begin();f!=pos0.end();f++){
+                        cout<<f->first<<"    ";
+                        while(!f->second.empty()){
+                            cout<<f->second.front().first<<" "<<f->second.front().second<<"    ";
+                            f->second.pop();
+                        }
+                        cout<<endl;
+                    }
+                    cout<<"\n\n\n";*/
                    // cout<<"\n\n\n";
                     pos0.clear();
                 }
@@ -247,16 +255,19 @@ int main(int argc, char** argv)
         /*for(int l=0;l<pos.size();l++){
             for(auto k=pos[l].begin();k!=pos[l].end();k++){
                 cout<<k->first<<"   ";
-                while(k->second.empty()){
-                    cout<<k->second.front().first<<" "<<k->second.front().second<<endl;
+
+                while(!k->second.empty()){
+                    cout<<k->second.front().first<<" "<<k->second.front().second<<"      ";
                     k->second.pop();
+                
                 }
+                cout<<endl;
             }
             cout<<endl;
         }*/
         // Close the file
         input_file.close();
-        }
+    }
     query.push_back(ans);
     remove_multiline_comment_from_middle(query);
   //  remove_multiline_comment_from_start(query);
@@ -271,6 +282,7 @@ int main(int argc, char** argv)
             temp="";
         }
     }
+    cout<<pos.size();
     for(int i=0;i<result.size();i++){
         generateTokens(myDFA,result[i],pos[i]);
      //   cout<<result[i]<<endl;
