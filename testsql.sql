@@ -1,4 +1,4 @@
-/*dfd*/select *   from m;  /*ds
+/*dfd*/select m   from table where m='a';  /*ds
 g*/select abc;
 select emp_id,count(*) from employee
 
