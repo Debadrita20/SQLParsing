@@ -5,7 +5,6 @@
 using namespace std;
 vector<string> keywords;
 vector<string> fnames;
-unordered_map<string,stack<pair<string,pair<int,int>>>> symbol_table;
 int checkFnNameList(string s)
 {
     for(int i=0;i<fnames.size();i++)
@@ -33,7 +32,7 @@ string toUpper(string s)
     }
     return result;
 }
-void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,int>>> pos)
+void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,int>>> pos, unordered_map<string,stack<pair<string,pair<int,int>>>> &symbol_table)
 {
     string curLexeme="";
     int curState=myDFA->getStart();
@@ -109,7 +108,7 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
             }*/
             symbol_table[curLexeme].push({tokens[tokens.size()-1],{pos[curLexeme[0]].front().first,pos[curLexeme[0]].front().second}});
             
-           // cout<< curLexeme<<" "<<tokens[tokens.size()-1]<<" "<<pos[curLexeme[0]].front().first<<" "<<pos[curLexeme[0]].front().second<<"\n\n\n";
+            //cout<< curLexeme<<" "<<tokens[tokens.size()-1]<<" "<<pos[curLexeme[0]].front().first<<" "<<pos[curLexeme[0]].front().second<<"\n\n\n";
             for(int j=0;j<curLexeme.size();j++)
                 pos[curLexeme[j]].pop();
             curLexeme="";
@@ -126,15 +125,6 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
         }
     }
     //unordered_map<string,stack<pair<string,pair<int,int>>>> symbol_table;
-    for(auto f=symbol_table.begin();f!=symbol_table.end();f++){
-        cout<<f->first<<"    ";
-        while(!f->second.empty()){
-            cout<<f->second.top().first<<"      "<<f->second.top().second.first<<" "<<f->second.top().second.second<<" ";
-            f->second.pop();
-        }
-        cout<<endl;
-    }
-    
     for(int i=0;i<tokens.size();i++)
     {
         cout<<tokens[i]<<endl;
