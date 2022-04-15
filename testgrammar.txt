@@ -1,0 +1,6 @@
+S A B
+id * idd
+S -> A B
+A -> id *
+A -> epsilon
+B -> idd
