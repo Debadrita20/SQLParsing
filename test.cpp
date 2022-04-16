@@ -2,7 +2,9 @@
 #include <bits/stdc++.h>
 #include "dfa.hpp"
 #include "tokengenerator.cpp"
+#include "parser.cpp"
 #include "dfa_initialize.hpp"
+//#include "parser_initialize.hpp"
 
 using namespace std;
 vector<unordered_map<char,queue<pair<int,int>>>> pos;
@@ -83,10 +85,11 @@ int main(int argc, char** argv)
     string ans;
     vector<string> query;
     dfa *myDFA=new dfa();
-    
+    parser *myParser=new parser();
     //initialise myDFA
     initialiseDFA(myDFA);
-
+    //initialise myParser
+    myParser->initialize();
     unordered_map<char,queue<pair<int,int>>> pos0;
     if(argc==1){
         
@@ -286,6 +289,7 @@ int main(int argc, char** argv)
     for(int i=0;i<result.size();i++){
         cout<<"For Query "<<(i+1)<<":\n";
         generateTokens(myDFA,result[i],pos[i],symbol_table);
+        myParser->parse();
      //   cout<<result[i]<<endl;
     }
     ofstream fout;

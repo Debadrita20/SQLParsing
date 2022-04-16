@@ -1,7 +1,7 @@
 
 #include <bits/stdc++.h>
 #include "keyword_fn_list_initialise.hpp"
-#include "parser.cpp"
+//#include "parser.cpp"
 
 using namespace std;
 vector<string> keywords;
@@ -123,10 +123,10 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
         }
     }
     //unordered_map<string,stack<pair<string,pair<int,int>>>> symbol_table;
-    for(int i=0;i<tokens.size();i++)
+    /*for(int i=0;i<tokens.size();i++)
     {
         cout<<tokens[i]<<endl;
-    }
+    }*/
     fp.close();
-    parse();
+    //parse();
 }
