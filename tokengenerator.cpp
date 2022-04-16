@@ -1,7 +1,7 @@
 
 #include <bits/stdc++.h>
 #include "keyword_fn_list_initialise.hpp"
-#include "parser.cpp"
+//#include "parser.cpp"
 
 using namespace std;
 vector<string> keywords;
@@ -42,14 +42,6 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
     vector<string> tokens;
     initialise_k(&keywords);
     initialise_fn(&fnames);
-    /*for(int i=0;i<keywords.size();i++)
-    {
-        cout<<keywords[i]<<endl;
-    }
-    for(int i=0;i<fnames.size();i++)
-    {
-        cout<<fnames[i]<<endl;
-    }*/
 
     //code to open file for storing the tokens and token numbers
     ofstream fp("tokens.txt");
@@ -76,10 +68,12 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
             if(tokenclass=="error")
             {
                 if(curState==4)
-                cout<<"Expected digit after ."<<""<<endl;
+                cout<<"Line "<<pos[curLexeme[curLexeme.size()-1]].front().first<<" Col. "<<pos[curLexeme[curLexeme.size()-1]].front().second<<": Expected digit after ."<<endl;
                 else if(curState==6||curState==7)
-                cout<<"Expected closing ' after "<<curLexeme[curLexeme.size()-1]<<""<<endl;
+                cout<<"Line "<<pos[curLexeme[curLexeme.size()-1]].front().first<<" Col. "<<pos[curLexeme[curLexeme.size()-1]].front().second<<": Expected closing ' after "<<curLexeme[curLexeme.size()-1]<<""<<endl;
                 curLexeme="";
+                for(int j=0;j<curLexeme.size();j++)
+                pos[curLexeme[j]].pop();
                 i--;  //for checking lookahead char again
                 curState=myDFA->getStart();
                 continue;
@@ -93,8 +87,10 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
             }
             if(isKeyword) tokenclass=toUpper(curLexeme)+"_KEYWORD";
             else if(isFn_name) tokenclass="fn_name";
+            else if(toUpper(curLexeme)=="NOT") tokenclass="not_operator";
+            else if(toUpper(curLexeme)=="AND"||toUpper(curLexeme)=="OR") tokenclass="binary_logical_operator";
             tokens.push_back(tokenclass);  
-            fp<<tokens.size()<<" "<<tokenclass<<"\n";   //add line number,col number
+            fp<<tokens.size()<<" "<<tokenclass<<" "<<pos[curLexeme[0]].front().first<<" "<<pos[curLexeme[0]].front().second<<"\n";   
             //put lexeme in symbol table with the tokenclass and token/line number
             //code 
            // cout<<"\n\n\n\n";
@@ -121,15 +117,16 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
         else   
         {
             //lexical error recovery code
-            cout<<"Unidentified character in SQL query: "<<lookaheadChar<<""<<endl;
+            cout<<"Line "<<pos[lookaheadChar].front().first<<" Col. "<<pos[lookaheadChar].front().second<<" Unidentified character in SQL query: "<<lookaheadChar<<""<<endl;
+            pos[lookaheadChar].pop();
             curState=myDFA->getStart();
         }
     }
     //unordered_map<string,stack<pair<string,pair<int,int>>>> symbol_table;
-    for(int i=0;i<tokens.size();i++)
+    /*for(int i=0;i<tokens.size();i++)
     {
         cout<<tokens[i]<<endl;
-    }
+    }*/
     fp.close();
-    parse();
+    //parse();
 }

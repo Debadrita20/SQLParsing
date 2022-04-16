@@ -1,0 +1,61 @@
+Q S I D SL ATT FK TNAME WH GB OB A X RES AGG_OPER T RES' PRED PRED' MORE RHS RES'' HPRED RES''' ATTR_NAMEORDER RES'''' ORDERING COLVAL TI CONST RES''''' DL DTNAME
+; SELECT_KEYWORD * id , AS_KEYWORD fn_name ( ) FROM_KEYWORD WHERE_KEYWORD not_operator binary_logical_operator relational_operator integer_const string_const GROUP_KEYWORD BY_KEYWORD HAVING_KEYWORD ORDER_KEYWORD ASC_KEYWORD DESC_KEYWORD INSERT_KEYWORD INTO_KEYWORD VALUES_KEYWORD DELETE_KEYWORD
+Q -> S ;
+Q -> I ;
+Q -> D ;
+S -> SL ATT FK TNAME WH GB OB 
+SL -> SELECT_KEYWORD
+ATT -> * 
+ATT -> A X RES
+A -> id  
+A -> AGG_OPER
+RES -> epsilon
+RES -> , A X RES
+X -> epsilon
+X -> AS_KEYWORD id
+AGG_OPER -> fn_name ( T )
+T -> * 
+T -> id
+FK -> FROM_KEYWORD
+TNAME -> id RES'
+RES' -> epsilon
+RES' -> , id RES'
+WH -> epsilon
+WH -> WHERE_KEYWORD PRED
+PRED -> PRED' MORE 
+PRED -> not_operator PRED
+PRED -> ( PRED )
+MORE -> epsilon
+MORE -> binary_logical_operator PRED
+PRED' -> id relational_operator RHS
+RHS -> id
+RHS -> integer_const
+RHS -> string_const
+GB -> epsilon
+GB -> GROUP_KEYWORD BY_KEYWORD id RES' RES''
+RES'' -> epsilon
+RES'' -> HAVING_KEYWORD HPRED
+HPRED -> not_operator AGG_OPER relational_operator integer_const RES'''
+HPRED ->  AGG_OPER relational_operator integer_const RES'''
+RES''' -> epsilon
+RES''' -> binary_logical_operator HPRED
+OB -> epsilon
+OB -> ORDER_KEYWORD BY_KEYWORD ATTR_NAMEORDER RES''''
+ATTR_NAMEORDER -> id ORDERING
+ORDERING -> epsilon
+ORDERING -> ASC_KEYWORD
+ORDERING -> DESC_KEYWORD
+RES'''' -> epsilon
+RES'''' -> , ATTR_NAMEORDER RES''''
+I -> INSERT_KEYWORD INTO_KEYWORD id COLVAL 
+COLVAL -> ( id TI CONST )
+COLVAL -> VALUES_KEYWORD ( CONST RES''''' )
+RES''''' -> epsilon
+RES''''' -> , CONST RES'''''
+TI -> , id TI CONST , 
+TI -> ) VALUES_KEYWORD (
+CONST -> integer_const
+CONST -> string_const
+D -> DL FK DTNAME WH
+DL -> DELETE_KEYWORD
+DTNAME -> id

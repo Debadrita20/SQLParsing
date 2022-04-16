@@ -1,103 +1,145 @@
 #include <bits/stdc++.h>
-
+//#include "parser_initialize.hpp"
 using namespace std;
-/*vector<string> terminals;
-class nonterminal
+class parser
 {
-    string name;
-    int isNullable;
-    set<string> first;
-    set<string> follow;
-    vector<string> productions;
-    public:
-    nonterminal(string n)
-    {
-        name=n;
-        isNullable=0;
-    }
-    void addproduction(string p)
-    {
-        productions.push_back(p);
-        if(p=="epsilon") isNullable=1;
-    }
-};
-vector<nonterminal> nonterminals;
-unordered_map<string,unordered_map<string,int>> parsingtable;
-string compute_first_set(string name)
-{
-    
-    if(isTerminal(name)) first.insert(name);
-    else
-    {
-        int i;
-        for(i=0;i<nonterminals.size();i++)
-        {
-            if(nonterminals[i].getName()==name) break;
-        }
-        vector<string> prods=nonterminals[i].getProductions();
-        for(int j=0;j<prods.size();j++)
-        {
-            string pr=prods[j];  
-            stringstream ss(pr);
-            string f;
-            ss>>f;
-            
-        }
-    }
-}
-void compute_follow_set()
-{
-    int i;
-}
-void parse()
-{
-    int i;
-    //read nonterminals from file, store in fi_fo_set
-    //read terminals from file
-    for(i=0;i<;i++)
-    { 
-        compute_first_set(&nts[i]);
-        compute_follow_set(&nts[i]);
-    }
-    generate_parsing_table(nts);
-    string token;
-    int line_no,col_no;
-    //open tokens.txt
-    while(!eof)
-    {
-        //read token,line_no,col_no
-        //parse
-        //error detection/recovery
-    }
-    //leftmost derivation display
-    //parse tree drawing
-}*/
-
+public:
 vector< pair<string, string> > gram;
 set<string> non_terms;
 set<string> terms;
 string start_var;
 map< string, set<string> > firsts;
 map< string, set<string> > follows;
+int **parse_table;
+public:
+//void find_first(vector< pair<string, string> > gram, map< string, set<string> > &firsts, string non_term); 
 
-void find_first(vector< pair<string, string> > gram, map< string, set<string> > &firsts, string non_term); 
+//void find_follow(vector< pair<string, string> > gram, map< string, set<string> > &follows, map< string, set<string> > firsts, 
+//	string non_term); 
+parser()
+{
+    start_var="";
+}
+void find_first(vector< pair<string, string> > gram, map< string, set<string> > &firsts, string non_term) {
 
-void find_follow(vector< pair<string, string> > gram, map< string, set<string> > &follows, map< string, set<string> > firsts, 
-	string non_term); 
+	for(auto it = gram.begin(); it != gram.end(); ++it) {
+		// Find productions of the non terminal
+		if(it->first != non_term) {
+			continue;
+		}
 
+		string rhs = it->second;
+        stringstream rhss(rhs);
+        string w;
+        vector<string> v;
+        while(rhss>>w)
+        {
+            v.push_back(w);
+        }
+		// Loop till a non terminal or no epsilon variable found
+		for(auto ch = v.begin(); ch != v.end(); ++ch) {
+			if(isTerminal(*ch)||(*ch)=="epsilon") {
+				firsts[non_term].insert(*ch);
+				break;
+			}
+			else {
+				// If char in prod is non terminal and whose firsts has no yet been found out
+				// Find first for that non terminal
+				if(firsts[*ch].empty()) {
+					find_first(gram, firsts, *ch);
+				}
+				// If variable doesn't have epsilon, stop loop
+				if(firsts[*ch].find("epsilon") == firsts[*ch].end()) {
+					firsts[non_term].insert(firsts[*ch].begin(), firsts[*ch].end());
+					break;
+				}
+
+				set<string> firsts_copy(firsts[*ch].begin(), firsts[*ch].end());
+
+				// Remove epsilon from firsts if not the last variable
+				if(ch + 1 != v.end()) {
+					firsts_copy.erase("epsilon");
+				}
+
+				// Append firsts of that variable
+				firsts[non_term].insert(firsts_copy.begin(), firsts_copy.end());
+			}
+		}
+		
+	}
+}
+
+void find_follow(vector< pair<string, string> > gram, map< string, set<string> > &follows, map< string,set<string> > firsts, 
+	string non_term) {
+
+	for(auto it = gram.begin(); it != gram.end(); ++it) {
+
+		// finished is true when finding follow from this production is complete
+		bool finished = true;
+		string rhs = it->second;
+        stringstream rhss(rhs);
+        string w;
+        vector<string> v;
+        while(rhss>>w)
+        {
+            v.push_back(w);
+        }
+		// Skip variables till reqd non terminal
+        auto ch=v.begin();
+		for(;ch != v.end() ; ++ch) {
+			if(*ch == non_term) {
+				finished = false;
+				break;
+			}
+		}
+		++ch;
+
+		for(;ch != v.end() && !finished; ++ch) {
+			if(isTerminal(*ch)||(*ch)=="epsilon") {
+				follows[non_term].insert(*ch);
+				finished = true;
+				break;
+			}
+
+			set<string> firsts_copy(firsts[*ch]);
+			// If char's firsts doesnt have epsilon follow search is over 
+			if(firsts_copy.find("epsilon") == firsts_copy.end()) {
+				follows[non_term].insert(firsts_copy.begin(), firsts_copy.end());
+				finished = true;
+				break;
+			}
+			// Else next char has to be checked after appending firsts to follow
+			firsts_copy.erase("epsilon");
+			follows[non_term].insert(firsts_copy.begin(), firsts_copy.end());
+
+		}
+
+
+		// If end of production, follow same as follow of variable
+		if(ch == v.end() && !finished) {
+			// Find follow if it doesn't have
+			if(follows[it->first].empty()) {
+				find_follow(gram, follows, firsts, it->first);
+			}
+			follows[non_term].insert(follows[it->first].begin(), follows[it->first].end());
+		}
+
+	}
+}
 int isTerminal(string s)
 {
     return terms.count(s);
 }
-
-void parse()
+void initialize()
 {
-	fstream grammar_file;
-	grammar_file.open("testgrammar.txt", ios::in);
+    fstream grammar_file;
+	grammar_file.open("grammar.txt", ios::in);
 	if(grammar_file.fail()) {
 		cout<<"The grammar file cannot be opened\n";
         return;
 	}
+    fstream parsing_req;
+    parsing_req.open("parsing_req.txt",ios::out);
     // Gather all non terminals
 	string ntsline,tsline;
     getline(grammar_file,ntsline);
@@ -107,11 +149,11 @@ void parse()
     {
         non_terms.insert(nt);
     }
-	cout<<"The non terminals are: ";
+	parsing_req<<"The non terminals are: ";
 	for(auto i = non_terms.begin(); i != non_terms.end(); ++i) {
-		cout<<*i<<" ";
+		parsing_req<<*i<<" ";
 	}
-	cout<<"\n";
+	parsing_req<<"\n";
     // Gather all terminals
 	getline(grammar_file,tsline);
     stringstream sst(tsline);
@@ -120,12 +162,12 @@ void parse()
         terms.insert(t);
     }
     terms.insert("$");
-	cout<<"The terminals are: ";
+	parsing_req<<"The terminals are: ";
 	for(auto i = terms.begin(); i != terms.end(); ++i) {
-		cout<<*i<<" ";
+		parsing_req<<*i<<" ";
 	}
-	cout<<"\n";
-	cout<<"Grammar parsed from grammar file: \n";
+	parsing_req<<"\n";
+	parsing_req<<"Grammar parsed from grammar file: \n";
 	
 	int count = 0;
 	while(!grammar_file.eof()) {
@@ -144,9 +186,9 @@ void parse()
         }
 		pair <string, string> production (lhs, rhs);
 		gram.push_back(production);
-		cout<<count++<<".  "<<gram.back().first<<" -> "<<gram.back().second<<"\n";
+		parsing_req<<count++<<".  "<<gram.back().first<<" -> "<<gram.back().second<<"\n";
 	}
-	cout<<"\n";
+	parsing_req<<"\n";
 
 	for(auto non_term = non_terms.begin(); non_term != non_terms.end(); ++non_term) {
 		if(firsts[*non_term].empty()){
@@ -154,15 +196,15 @@ void parse()
 		}
 	}
 
-	cout<<"First Sets for corresponding non-terminals: \n";
+	parsing_req<<"First Sets for corresponding non-terminals: \n";
 	for(auto it = firsts.begin(); it != firsts.end(); ++it) {
-		cout<<it->first<<" : ";
+		parsing_req<<it->first<<" : ";
 		for(auto firsts_it = it->second.begin(); firsts_it != it->second.end(); ++firsts_it) {
-			cout<<*firsts_it<<" ";
+			parsing_req<<*firsts_it<<" ";
 		}
-		cout<<"\n";
+		parsing_req<<"\n";
 	}
-	cout<<"\n";
+	parsing_req<<"\n";
 
 	// Follow of start variable first
 	start_var = gram.begin()->first;
@@ -175,18 +217,29 @@ void parse()
 		}
 	}
 
-	cout<<"Follow Sets for the corresponding non-terminals: \n";
+	parsing_req<<"Follow Sets for the corresponding non-terminals: \n";
 	for(auto it = follows.begin(); it != follows.end(); ++it) {
-		cout<<it->first<<" : ";
+		parsing_req<<it->first<<" : ";
 		for(auto follows_it = it->second.begin(); follows_it != it->second.end(); ++follows_it) {
-			cout<<*follows_it<<" ";
+			parsing_req<<*follows_it<<" ";
 		}
-		cout<<"\n";
+		parsing_req<<"\n";
 	}
-	cout<<"\n";
+	parsing_req<<"\n";
 
-	int parse_table[non_terms.size()][terms.size()];
-	fill(&parse_table[0][0], &parse_table[0][0] + sizeof(parse_table)/sizeof(parse_table[0][0]), -1);
+	parse_table=(int **)malloc(non_terms.size()*sizeof(int *));
+    for(int kk=0;kk<non_terms.size();kk++)
+    {
+        parse_table[kk]=(int *)malloc(terms.size()*sizeof(int));
+    }
+    for(int kk=0;kk<non_terms.size();kk++)
+    {
+        for(int kkk=0;kkk<terms.size();kkk++)
+        {
+            parse_table[kk][kkk]=-1;
+        }
+    }
+	//fill(&parse_table[0][0], &parse_table[0][0] + sizeof(parse_table)/sizeof(parse_table[0][0]), -1);
 	for(auto prod = gram.begin(); prod != gram.end(); ++prod) {
 		string rhs = prod->second;
 		set<string> next_list;
@@ -243,27 +296,31 @@ void parse()
 		}		
 	}
 	// Print parsing table
-	cout<<"LL(1) Parsing Table: \n";
-	cout<<" \t";
+	parsing_req<<"LL(1) Parsing Table: \n";
+	parsing_req<<" \t";
 	for(auto i = terms.begin(); i != terms.end(); ++i) {
-		cout<<*i<<"\t";
+		parsing_req<<*i<<"\t";
 	}
-	cout<<"\n";
+	parsing_req<<"\n";
 	for(auto row = non_terms.begin(); row != non_terms.end(); ++row) {
-		cout<<*row<<"\t";
+		parsing_req<<*row<<"\t";
 		for(int col = 0; col < terms.size(); ++col) {
 			int row_num = distance(non_terms.begin(), row);
-			if(parse_table[row_num][col] == -1) cout<<"scan\t";
-            else if(parse_table[row_num][col] == -2) cout<<"pop\t";
-			else cout<<parse_table[row_num][col]<<"\t";
+			if(parse_table[row_num][col] == -1) parsing_req<<"scan\t";
+            else if(parse_table[row_num][col] == -2) parsing_req<<"pop\t";
+			else parsing_req<<parse_table[row_num][col]<<"\t";
 		}
-		cout<<"\n";
+		parsing_req<<"\n";
 	}
-	cout<<"\n";
-
-	queue<string> input,positions, temp;
+	parsing_req<<"\n";
+    grammar_file.close();
+    parsing_req.close();
+}
+void parse()
+{
+    queue<string> input,positions;
     string li;
-    /*ifstream readFile("tokens.txt");
+    ifstream readFile("tokens.txt");
     while(getline(readFile,li))
     {
         stringstream str(li);
@@ -271,25 +328,13 @@ void parse()
         str>>num;
         str>>inp;
         input.push(inp);
-        while(str>>s)
-        {
-            pos=pos+s;
-            pos=pos+" ";
-        }
+        str>>s;
+        pos=pos+s;
+        pos=pos+" Col. ";
+        str>>s;
+        pos=pos+s;
         positions.push(pos);
-    }*/
-	input.push("id");
-	input.push("+");
-	input.push("id");
-	// s
-    // input.push(")");
-    // input.push("id");
-    // input.push("*");
-    // input.push("(");
-    // input.push("id");
-    // input.push("+");
-    // input.push("id");
-    // input.push(")");
+    }
     input.push("$");
 	stack<string> st;
 	st.push("$");
@@ -299,12 +344,15 @@ void parse()
    
 	bool accepted = true;
 	while(!st.empty() && !input.empty()) {
+        if(input.front()=="") break;
 		if(input.front() == st.top()) {
 			st.pop();
 			input.pop();
+            positions.pop();
 		}
 		else if(isTerminal(st.top())) {
-			if(st.top()!="$") cout<<"Unmatched terminal found: "<<st.top()<<"\n";
+			if(st.top()!="$") cout<<"Unmatched terminal: "<<st.top()<<"\n";
+            else cout<<"Encountered unmatched tokens in input"<<"\n";
 			accepted = false;
 			st.pop();
 		}
@@ -320,21 +368,26 @@ void parse()
                 for(int j=0;j<terms.size();j++)
                 {
                     if(parse_table[row][j]>=0) 
-                    {
+                    { 
+                        if(expect=="")
                         expect=expect+"\'"+(*it)+"\'";
-                        expect=expect+", ";
+                        else {
+                        expect=expect+" or ";
+                        expect=expect+"\'"+(*it)+"\'";
+                        }
                     }
                     it++;
                 }
-				cout<<"Expected "<<expect<<"before "<<input.front()<<"\n";
+				cout<<"Line "<<positions.front()<<": Expected "<<expect<<" before "<<input.front()<<"\n";
 				accepted = false;
                 st.pop();
                 continue;
 			}
             else if(prod_num == -1) {
-				cout<<"Unexpected token found: "<<input.front()<<"\n";
+				cout<<"Line "<<positions.front()<<" Unexpected token found: "<<input.front()<<"\n";
 				accepted = false;
                 input.pop();
+                positions.pop();
                 continue;
 			}
 
@@ -477,125 +530,11 @@ void parse()
 	}
 
 	if(accepted) {
-		cout<<"No Syntax Errors Found...Input string is accepted\n";
+		cout<<"No Syntax Errors Found...SQL Query Accepted\n";
 	}
 	else {
-		cout<<"Input string is rejected\n";
+		cout<<"Errors Found in SQL Query...Rejected\n";
 	}
-
-	return;
+    readFile.close();
 }
-
-void find_first(vector< pair<string, string> > gram, map< string, set<string> > &firsts, string non_term) {
-
-	for(auto it = gram.begin(); it != gram.end(); ++it) {
-		// Find productions of the non terminal
-		if(it->first != non_term) {
-			continue;
-		}
-
-		string rhs = it->second;
-        stringstream rhss(rhs);
-        string w;
-        vector<string> v;
-        while(rhss>>w)
-        {
-            v.push_back(w);
-        }
-		// Loop till a non terminal or no epsilon variable found
-		for(auto ch = v.begin(); ch != v.end(); ++ch) {
-			if(isTerminal(*ch)||(*ch)=="epsilon") {
-				firsts[non_term].insert(*ch);
-				break;
-			}
-			else {
-				// If char in prod is non terminal and whose firsts has no yet been found out
-				// Find first for that non terminal
-				if(firsts[*ch].empty()) {
-					find_first(gram, firsts, *ch);
-				}
-				// If variable doesn't have epsilon, stop loop
-				if(firsts[*ch].find("epsilon") == firsts[*ch].end()) {
-					firsts[non_term].insert(firsts[*ch].begin(), firsts[*ch].end());
-					break;
-				}
-
-				set<string> firsts_copy(firsts[*ch].begin(), firsts[*ch].end());
-
-				// Remove epsilon from firsts if not the last variable
-				if(ch + 1 != v.end()) {
-					firsts_copy.erase("epsilon");
-				}
-
-				// Append firsts of that variable
-				firsts[non_term].insert(firsts_copy.begin(), firsts_copy.end());
-			}
-		}
-		
-	}
-}
-
-void find_follow(vector< pair<string, string> > gram, map< string, set<string> > &follows, map< string,set<string> > firsts, 
-	string non_term) {
-
-	for(auto it = gram.begin(); it != gram.end(); ++it) {
-
-		// finished is true when finding follow from this production is complete
-		bool finished = true;
-		string rhs = it->second;
-        stringstream rhss(rhs);
-        string w;
-        vector<string> v;
-        while(rhss>>w)
-        {
-            v.push_back(w);
-        }
-		// Skip variables till reqd non terminal
-        auto ch=v.begin();
-		for(;ch != v.end() ; ++ch) {
-			if(*ch == non_term) {
-				finished = false;
-				break;
-			}
-		}
-		++ch;
-
-		for(;ch != v.end() && !finished; ++ch) {
-			if(isTerminal(*ch)||(*ch)=="epsilon") {
-				follows[non_term].insert(*ch);
-				finished = true;
-				break;
-			}
-
-			set<string> firsts_copy(firsts[*ch]);
-			// If char's firsts doesnt have epsilon follow search is over 
-			if(firsts_copy.find("epsilon") == firsts_copy.end()) {
-				follows[non_term].insert(firsts_copy.begin(), firsts_copy.end());
-				finished = true;
-				break;
-			}
-			// Else next char has to be checked after appending firsts to follow
-			firsts_copy.erase("epsilon");
-			follows[non_term].insert(firsts_copy.begin(), firsts_copy.end());
-
-		}
-
-
-		// If end of production, follow same as follow of variable
-		if(ch == v.end() && !finished) {
-			// Find follow if it doesn't have
-			if(follows[it->first].empty()) {
-				find_follow(gram, follows, firsts, it->first);
-			}
-			follows[non_term].insert(follows[it->first].begin(), follows[it->first].end());
-		}
-
-	}
-
-}
-int main()
-{
-    cout<<"unit testing\n";
-    parse();
-    return 0;
-}
+};
