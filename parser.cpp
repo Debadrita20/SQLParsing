@@ -261,7 +261,7 @@ void parse()
 	}
 	cout<<"\n";
 
-	queue<string> input,positions;
+	queue<string> input,positions, temp;
     string li;
     /*ifstream readFile("tokens.txt");
     while(getline(readFile,li))
@@ -278,18 +278,24 @@ void parse()
         }
         positions.push(pos);
     }*/
-    input.push(")");
-    input.push("id");
-    input.push("*");
-    input.push("(");
-    input.push("id");
-    input.push("+");
-    input.push("id");
-    input.push(")");
+	input.push("id");
+	input.push("+");
+	input.push("id");
+	// s
+    // input.push(")");
+    // input.push("id");
+    // input.push("*");
+    // input.push("(");
+    // input.push("id");
+    // input.push("+");
+    // input.push("id");
+    // input.push(")");
     input.push("$");
 	stack<string> st;
 	st.push("$");
 	st.push(start_var);
+
+	temp = input;
    
 	bool accepted = true;
 	while(!st.empty() && !input.empty()) {
@@ -331,6 +337,7 @@ void parse()
                 input.pop();
                 continue;
 			}
+
 			st.pop();
 			string rhs = gram[prod_num].second;
             stringstream rhss(rhs);
@@ -340,12 +347,132 @@ void parse()
             {
                 v.push_back(w);
             }
+
+
 			if(v[0] == "epsilon") {
 				continue;
 			}
 			for(auto ch = v.rbegin(); ch != v.rend(); ++ch) {
 				st.push(*ch);
 			}
+		}
+	}
+
+	input = temp;
+
+
+    // LMDT
+	if (accepted){
+
+		int row = distance(non_terms.begin(), non_terms.find(start_var));
+		int col = distance(terms.begin(), terms.find(input.front()));
+		int prod_num = parse_table[row][col];
+        string output = "";
+		output = gram[prod_num].second;
+
+		cout << "=> " << output << " " << endl << "=>";
+
+        while (true){
+
+			stringstream ss (output);
+			string sym;
+
+			int nonTerminalPresent = 0;
+			int f = 0;
+			string newoutput = "";
+			
+			while (ss >> sym){
+				// cout << "Symbol : " << ++count << endl;
+				if (isTerminal(sym)){
+					cout << " " << sym;
+					newoutput += " ";
+					newoutput += sym;
+					
+					continue;
+				}
+
+				if (f == 1){   // ckeck for first non terminal in the rule
+				    
+					// -------------------------------------->
+
+					if (sym != "epsilon"){
+						cout << " " << sym; 
+					
+						newoutput += " ";
+						newoutput += sym;
+					}
+				
+					
+					// cout << "no " << newoutput << " ";
+					continue;
+				}
+
+				// if sym is not terminal
+				row = distance(non_terms.begin(), non_terms.find(sym));
+				col = distance(terms.begin(), terms.find(input.front()));
+				prod_num = parse_table[row][col];
+
+				string children = gram[prod_num].second;
+
+				stringstream schild(children);
+				string child;
+
+				while(schild >> child){
+					if (isTerminal(child)){
+						input.pop();
+					}
+					
+					
+					else {
+						break;
+					}
+				}
+
+
+				nonTerminalPresent = 1;
+
+				stringstream sschild(children);
+
+				// print chidren
+				while(sschild >> child){
+					
+	//  ------------------------------------------->
+					if (child != "epsilon"){
+						cout << " " << child;
+					    newoutput += " ";
+					    newoutput += child;
+					
+					}
+				}
+				
+				f = 1;      // Encountered first non terminal
+			}
+
+			output = newoutput;
+
+			cout << endl;
+			
+            
+			stringstream scheck(newoutput);
+			string check;
+			int c = 0;
+			while (scheck >> check){
+				if (!isTerminal(check)){
+					c = 1;
+					break;
+				}
+			}
+
+			if (c == 0){
+				break;
+			}
+
+			cout << "=>";
+
+			if (nonTerminalPresent == 0){
+				break;
+			}
+
 		}
 	}
 
