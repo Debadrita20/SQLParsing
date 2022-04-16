@@ -318,7 +318,7 @@ void initialize()
 }
 void parse()
 {
-    queue<string> input,positions;
+    queue<string> input,positions, temp;
     string li;
     ifstream readFile("tokens.txt");
     while(getline(readFile,li))
