@@ -278,6 +278,7 @@ void parse()
         }
         positions.push(pos);
     }*/
+    input.push(")");
     input.push("id");
     input.push("*");
     input.push("(");
@@ -290,14 +291,6 @@ void parse()
 	st.push("$");
 	st.push(start_var);
    
-	/*// Check if input string is valid
-	for(auto ch = input.begin(); ch != input.end(); ++ch) {
-		if(terms.find(*ch) == terms.end()) {
-			cout<<"Input string is invalid\n";
-			return;
-		}
-	}*/
-	// cout<<"Processing input string\n";
 	bool accepted = true;
 	while(!st.empty() && !input.empty()) {
 		if(input.front() == st.top()) {
@@ -305,9 +298,9 @@ void parse()
 			input.pop();
 		}
 		else if(isTerminal(st.top())) {
-			cout<<"Unmatched terminal found\n";
+			if(st.top()!="$") cout<<"Unmatched terminal found: "<<st.top()<<"\n";
 			accepted = false;
-			break;
+			st.pop();
 		}
 		else {
 			string stack_top = st.top();
@@ -315,12 +308,29 @@ void parse()
 			int col = distance(terms.begin(), terms.find(input.front()));
 			int prod_num = parse_table[row][col];
 
-			if(prod_num == -1) {
-				cout<<"No production found in parse table\n";
+			if(prod_num == -2) {
+                string expect="";
+                auto it=terms.begin();
+                for(int j=0;j<terms.size();j++)
+                {
+                    if(parse_table[row][j]>=0) 
+                    {
+                        expect=expect+"\'"+(*it)+"\'";
+                        expect=expect+", ";
+                    }
+                    it++;
+                }
+				cout<<"Expected "<<expect<<"before "<<input.front()<<"\n";
 				accepted = false;
-				break;
+                st.pop();
+                continue;
 			}
-
+            else if(prod_num == -1) {
+				cout<<"Unexpected token found: "<<input.front()<<"\n";
+				accepted = false;
+                input.pop();
+                continue;
+			}
 			st.pop();
 			string rhs = gram[prod_num].second;
             stringstream rhss(rhs);
