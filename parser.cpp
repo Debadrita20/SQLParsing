@@ -228,6 +228,20 @@ void parse()
 			parse_table[row][col] = prod_num;
 		}
 	}
+    //for error recovery
+    for(auto row = non_terms.begin(); row != non_terms.end(); ++row) {
+        auto i=terms.begin();		
+		for(int col = 0; col < terms.size(); ++col) {
+			int row_num = distance(non_terms.begin(), row);
+			if(parse_table[row_num][col] == -1) {
+				if(*(i)=="$"||follows[(*row)].count(*(i)))
+                parse_table[row_num][col]=-2;    //-2 for pop, -1 for scan
+                i++;
+				continue;
+			}
+            i++;			
+		}		
+	}
 	// Print parsing table
 	cout<<"LL(1) Parsing Table: \n";
 	cout<<" \t";
@@ -239,11 +253,9 @@ void parse()
 		cout<<*row<<"\t";
 		for(int col = 0; col < terms.size(); ++col) {
 			int row_num = distance(non_terms.begin(), row);
-			if(parse_table[row_num][col] == -1) {
-				cout<<"-\t";
-				continue;
-			}
-			cout<<parse_table[row_num][col]<<"\t";
+			if(parse_table[row_num][col] == -1) cout<<"scan\t";
+            else if(parse_table[row_num][col] == -2) cout<<"pop\t";
+			else cout<<parse_table[row_num][col]<<"\t";
 		}
 		cout<<"\n";
 	}
