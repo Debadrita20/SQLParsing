@@ -1,77 +1,6 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-/*vector<string> terminals;
-class nonterminal
-{
-    string name;
-    int isNullable;
-    set<string> first;
-    set<string> follow;
-    vector<string> productions;
-    public:
-    nonterminal(string n)
-    {
-        name=n;
-        isNullable=0;
-    }
-    void addproduction(string p)
-    {
-        productions.push_back(p);
-        if(p=="epsilon") isNullable=1;
-    }
-};
-vector<nonterminal> nonterminals;
-unordered_map<string,unordered_map<string,int>> parsingtable;
-string compute_first_set(string name)
-{
-    
-    if(isTerminal(name)) first.insert(name);
-    else
-    {
-        int i;
-        for(i=0;i<nonterminals.size();i++)
-        {
-            if(nonterminals[i].getName()==name) break;
-        }
-        vector<string> prods=nonterminals[i].getProductions();
-        for(int j=0;j<prods.size();j++)
-        {
-            string pr=prods[j];  
-            stringstream ss(pr);
-            string f;
-            ss>>f;
-            
-        }
-    }
-}
-void compute_follow_set()
-{
-    int i;
-}
-void parse()
-{
-    int i;
-    //read nonterminals from file, store in fi_fo_set
-    //read terminals from file
-    for(i=0;i<;i++)
-    { 
-        compute_first_set(&nts[i]);
-        compute_follow_set(&nts[i]);
-    }
-    generate_parsing_table(nts);
-    string token;
-    int line_no,col_no;
-    //open tokens.txt
-    while(!eof)
-    {
-        //read token,line_no,col_no
-        //parse
-        //error detection/recovery
-    }
-    //leftmost derivation display
-    //parse tree drawing
-}*/
 
 vector< pair<string, string> > gram;
 set<string> non_terms;
@@ -93,7 +22,7 @@ int isTerminal(string s)
 void parse()
 {
 	fstream grammar_file;
-	grammar_file.open("testgrammar.txt", ios::in);
+	grammar_file.open("grammar.txt", ios::in);
 	if(grammar_file.fail()) {
 		cout<<"The grammar file cannot be opened\n";
         return;
@@ -263,7 +192,7 @@ void parse()
 
 	queue<string> input,positions;
     string li;
-    /*ifstream readFile("tokens.txt");
+    ifstream readFile("tokens.txt");
     while(getline(readFile,li))
     {
         stringstream str(li);
@@ -271,21 +200,21 @@ void parse()
         str>>num;
         str>>inp;
         input.push(inp);
-        while(str>>s)
-        {
-            pos=pos+s;
-            pos=pos+" ";
-        }
+        str>>s;
+        pos=pos+s;
+        pos=pos+" Col. ";
+        str>>s;
+        pos=pos+s;
         positions.push(pos);
-    }*/
+    }
+    /*input.push("id");
     input.push(")");
-    input.push("id");
     input.push("*");
     input.push("(");
     input.push("id");
     input.push("+");
     input.push("id");
-    input.push(")");
+    input.push(")");*/
     input.push("$");
 	stack<string> st;
 	st.push("$");
@@ -293,12 +222,15 @@ void parse()
    
 	bool accepted = true;
 	while(!st.empty() && !input.empty()) {
+        if(input.front()=="") break;
 		if(input.front() == st.top()) {
 			st.pop();
 			input.pop();
+            positions.pop();
 		}
 		else if(isTerminal(st.top())) {
-			if(st.top()!="$") cout<<"Unmatched terminal found: "<<st.top()<<"\n";
+			if(st.top()!="$") cout<<"Unmatched terminal: "<<st.top()<<"\n";
+            else cout<<"Encountered unmatched tokens in input"<<"\n";
 			accepted = false;
 			st.pop();
 		}
@@ -314,21 +246,26 @@ void parse()
                 for(int j=0;j<terms.size();j++)
                 {
                     if(parse_table[row][j]>=0) 
-                    {
+                    { 
+                        if(expect=="")
                         expect=expect+"\'"+(*it)+"\'";
-                        expect=expect+", ";
+                        else {
+                        expect=expect+" or ";
+                        expect=expect+"\'"+(*it)+"\'";
+                        }
                     }
                     it++;
                 }
-				cout<<"Expected "<<expect<<"before "<<input.front()<<"\n";
+				cout<<"Line "<<positions.front()<<": Expected "<<expect<<" before "<<input.front()<<"\n";
 				accepted = false;
                 st.pop();
                 continue;
 			}
             else if(prod_num == -1) {
-				cout<<"Unexpected token found: "<<input.front()<<"\n";
+				cout<<"Line "<<positions.front()<<" Unexpected token found: "<<input.front()<<"\n";
 				accepted = false;
                 input.pop();
+                positions.pop();
                 continue;
 			}
 			st.pop();
@@ -350,10 +287,10 @@ void parse()
 	}
 
 	if(accepted) {
-		cout<<"No Syntax Errors Found...Input string is accepted\n";
+		cout<<"No Syntax Errors Found...SQL Query Accepted\n";
 	}
 	else {
-		cout<<"Input string is rejected\n";
+		cout<<"Errors Found in SQL Query...Rejected\n";
 	}
 
 	return;
@@ -466,9 +403,9 @@ void find_follow(vector< pair<string, string> > gram, map< string, set<string> >
 	}
 
 }
-int main()
+/*int main()
 {
     cout<<"unit testing\n";
     parse();
     return 0;
-}
+}*/

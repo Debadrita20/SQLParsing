@@ -1,5 +1,9 @@
-1 SELECT_KEYWORD
-2 *
-3 FROM_KEYWORD
-4 id
-5 ;
+1 SELECT_KEYWORD 1 8
+2 id 1 15
+3 FROM_KEYWORD 1 19
+4 id 1 24
+5 WHERE_KEYWORD 1 30
+6 id 1 36
+7 relational_operator 1 37
+8 string_const 1 38
+9 ; 1 41

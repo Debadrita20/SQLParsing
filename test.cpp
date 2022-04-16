@@ -284,6 +284,7 @@ int main(int argc, char** argv)
         }
     }
     for(int i=0;i<result.size();i++){
+        cout<<"For Query "<<(i+1)<<":\n";
         generateTokens(myDFA,result[i],pos[i],symbol_table);
      //   cout<<result[i]<<endl;
     }
