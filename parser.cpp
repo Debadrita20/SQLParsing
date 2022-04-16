@@ -230,20 +230,20 @@ void parse()
 	}
 	// Print parsing table
 	cout<<"LL(1) Parsing Table: \n";
-	cout<<"   ";
+	cout<<" \t";
 	for(auto i = terms.begin(); i != terms.end(); ++i) {
-		cout<<*i<<" ";
+		cout<<*i<<"\t";
 	}
 	cout<<"\n";
 	for(auto row = non_terms.begin(); row != non_terms.end(); ++row) {
-		cout<<*row<<"  ";
+		cout<<*row<<"\t";
 		for(int col = 0; col < terms.size(); ++col) {
 			int row_num = distance(non_terms.begin(), row);
 			if(parse_table[row_num][col] == -1) {
-				cout<<"- ";
+				cout<<"-\t";
 				continue;
 			}
-			cout<<parse_table[row_num][col]<<" ";
+			cout<<parse_table[row_num][col]<<"\t";
 		}
 		cout<<"\n";
 	}
@@ -268,7 +268,11 @@ void parse()
     }*/
     input.push("id");
     input.push("*");
+    input.push("(");
     input.push("id");
+    input.push("+");
+    input.push("id");
+    input.push(")");
     input.push("$");
 	stack<string> st;
 	st.push("$");
@@ -351,7 +355,7 @@ void find_first(vector< pair<string, string> > gram, map< string, set<string> > 
         }
 		// Loop till a non terminal or no epsilon variable found
 		for(auto ch = v.begin(); ch != v.end(); ++ch) {
-			if(isTerminal(*ch)) {
+			if(isTerminal(*ch)||(*ch)=="epsilon") {
 				firsts[non_term].insert(*ch);
 				break;
 			}
@@ -408,7 +412,7 @@ void find_follow(vector< pair<string, string> > gram, map< string, set<string> >
 		++ch;
 
 		for(;ch != v.end() && !finished; ++ch) {
-			if(isTerminal(*ch)) {
+			if(isTerminal(*ch)||(*ch)=="epsilon") {
 				follows[non_term].insert(*ch);
 				finished = true;
 				break;
