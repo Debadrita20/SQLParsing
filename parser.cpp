@@ -316,11 +316,14 @@ void initialize()
     grammar_file.close();
     parsing_req.close();
 }
-void parse()
+void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks)
 {
-    queue<string> input,positions, temp;
+    for(int i=0;i<toks.size();i++) {
+        cout<<"Query "<<(i+1)<<endl;
+    queue<string> input, temp;
+    queue<int> lineno,colno;
     string li;
-    ifstream readFile("tokens.txt");
+    /*ifstream readFile("tokens.txt");
     while(getline(readFile,li))
     {
         stringstream str(li);
@@ -334,6 +337,15 @@ void parse()
         str>>s;
         pos=pos+s;
         positions.push(pos);
+    }*/
+    vector<string> in=toks[i].first;
+    for(int j=0;j<in.size();j++)
+    input.push(in[j]);
+    vector<pair<int,int>> po=toks[i].second;
+    for(int j=0;j<po.size();j++)
+    {
+        lineno.push(po[j].first);
+        colno.push(po[j].second);
     }
     input.push("$");
 	stack<string> st;
@@ -341,14 +353,17 @@ void parse()
 	st.push(start_var);
 
 	temp = input;
-   
+    int prvl=0,prvc=0;
 	bool accepted = true;
 	while(!st.empty() && !input.empty()) {
         if(input.front()=="") break;
 		if(input.front() == st.top()) {
 			st.pop();
 			input.pop();
-            positions.pop();
+            prvl=lineno.front();
+            prvc=colno.front();
+            lineno.pop();
+            colno.pop();
 		}
 		else if(isTerminal(st.top())) {
 			if(st.top()!="$") cout<<"Unmatched terminal: "<<st.top()<<"\n";
@@ -378,16 +393,21 @@ void parse()
                     }
                     it++;
                 }
-				cout<<"Line "<<positions.front()<<": Expected "<<expect<<" before "<<input.front()<<"\n";
+                if(input.front()!="$")
+				cout<<"Line "<<lineno.front()<<" Col. "<<colno.front()<<": Expected "<<expect<<" before "<<input.front()<<"\n";
+                else cout<<"Line "<<prvl<<" Col. "<<prvc<<": Expected "<<expect<<" before "<<input.front()<<"\n";
 				accepted = false;
                 st.pop();
                 continue;
 			}
             else if(prod_num == -1) {
-				cout<<"Line "<<positions.front()<<" Unexpected token found: "<<input.front()<<"\n";
+				cout<<"Line "<<lineno.front()<<" Col. "<<colno.front()<<" Unexpected token found: "<<input.front()<<"\n";
 				accepted = false;
                 input.pop();
-                positions.pop();
+                prvl=lineno.front();
+                prvc=colno.front();
+                lineno.pop();
+                colno.pop();
                 continue;
 			}
 
@@ -535,7 +555,8 @@ void parse()
 		}
 	}
 
-    readFile.close();
+    //readFile.close();
+    }
     cout<<"tata"<<endl;
     return;
 }

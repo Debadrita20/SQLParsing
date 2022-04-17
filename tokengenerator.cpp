@@ -93,10 +93,11 @@ pair<vector<string>,vector<pair<int,int>>> generateTokens(dfa *myDFA,string quer
             tokens.push_back(tokenclass);  
             fp<<tokens.size()<<" "<<tokenclass<<" "<<pos[curLexeme[0]].front().first<<" "<<pos[curLexeme[0]].front().second<<"\n"; 
             tt.push_back(tokenclass);
+            pair<int,int> pos_pair=make_pair(pos[curLexeme[0]].front().first,pos[curLexeme[0]].front().second);
             /*string po=""+pos[curLexeme[0]].front().first;
             po=po+" ";
-            po=po+""+pos[curLexeme[0]].front().second;
-            posi.push_back(po);*/
+            po=po+""+pos[curLexeme[0]].front().second;*/
+            posi.push_back(pos_pair);
             //put lexeme in symbol table with the tokenclass and token/line number
             //code 
            // cout<<"\n\n\n\n";
