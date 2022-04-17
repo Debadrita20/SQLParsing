@@ -287,21 +287,24 @@ int main(int argc, char** argv)
         }
     }
     vector<pair<vector<string>,vector<pair<int,int>>>> toks;
+    vector<int> hasLexErr;
     for(int i=0;i<result.size();i++){
-        cout<<"For Query "<<(i+1)<<":\n";
-        toks.push_back(generateTokens(myDFA,result[i],pos[i],symbol_table));
+        //cout<<"For Query "<<(i+1)<<":\n";
+        int errflag=0;
+        toks.push_back(generateTokens(myDFA,result[i],pos[i],symbol_table,errflag));
+        hasLexErr.push_back(errflag);
         //cout<<"hello there"<<endl;
         //myParser->parse();
         //cout<<"hello"<<endl;
      //   cout<<result[i]<<endl;
     }
-    for(int i=0;i<toks.size();i++)
+    /*for(int i=0;i<toks.size();i++)
     {
         vector<string> tok=toks[i].first;
         vector<pair<int,int>> pos=toks[i].second;
         for(int j=0;j<tok.size();j++)
         cout<<tok[j]<<" position "<<pos[j].first<<" "<<pos[j].second<<endl;
-    }
+    }*/
     ofstream fout;
     string line;
     fout.open("SymbolTable.txt");
@@ -327,7 +330,7 @@ int main(int argc, char** argv)
         break;
     }
     fout.close();
-    myParser->parse(toks);
+    myParser->parse(toks,hasLexErr);
 
     //token extraction and identification
    /* for(int i=0;i<query.size();i++)
