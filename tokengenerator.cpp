@@ -32,7 +32,7 @@ string toUpper(string s)
     }
     return result;
 }
-pair<vector<string>,vector<pair<int,int>>> generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,int>>> pos, unordered_map<string,stack<pair<string,pair<int,int>>>> &symbol_table)
+pair<vector<string>,vector<pair<int,int>>> generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,int>>> pos, unordered_map<string,stack<pair<string,pair<int,int>>>> &symbol_table,int &errflag)
 {
     string curLexeme="";
     int curState=myDFA->getStart();
@@ -77,6 +77,7 @@ pair<vector<string>,vector<pair<int,int>>> generateTokens(dfa *myDFA,string quer
                 pos[curLexeme[j]].pop();
                 i--;  //for checking lookahead char again
                 curState=myDFA->getStart();
+                errflag=1;
                 continue;
             }
             int isKeyword=0,isFn_name=0;
@@ -127,6 +128,7 @@ pair<vector<string>,vector<pair<int,int>>> generateTokens(dfa *myDFA,string quer
             cout<<"Line "<<pos[lookaheadChar].front().first<<" Col. "<<pos[lookaheadChar].front().second<<" Unidentified character in SQL query: "<<lookaheadChar<<""<<endl;
             pos[lookaheadChar].pop();
             curState=myDFA->getStart();
+            errflag=1;
         }
     }
     //unordered_map<string,stack<pair<string,pair<int,int>>>> symbol_table;

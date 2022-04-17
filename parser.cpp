@@ -316,10 +316,14 @@ void initialize()
     grammar_file.close();
     parsing_req.close();
 }
-void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks)
+void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks,vector<int> hasLexErr)
 {
     for(int i=0;i<toks.size();i++) {
-        cout<<"Query "<<(i+1)<<endl;
+        //cout<<"Query "<<(i+1)<<endl;
+    if(hasLexErr[i]) {
+        cout<<"SQL Query "<<(i+1)<<" Rejected"<<endl;
+        continue;
+    }
     queue<string> input, temp;
     queue<int> lineno,colno;
     string li;
@@ -354,7 +358,7 @@ void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks)
 
 	temp = input;
     int prvl=0,prvc=0;
-	bool accepted = true;
+	bool accepted = true,rejectedex=false;
 	while(!st.empty() && !input.empty()) {
         if(input.front()=="") break;
 		if(input.front() == st.top()) {
@@ -393,9 +397,12 @@ void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks)
                     }
                     it++;
                 }
+                if(!rejectedex||input.front()!="$") {
                 if(input.front()!="$")
 				cout<<"Line "<<lineno.front()<<" Col. "<<colno.front()<<": Expected "<<expect<<" before "<<input.front()<<"\n";
-                else cout<<"Line "<<prvl<<" Col. "<<prvc<<": Expected "<<expect<<" before "<<input.front()<<"\n";
+                else cout<<"Line "<<prvl<<" Col. "<<prvc<<": Expected "<<expect<<"\n";
+                }
+                rejectedex=true;
 				accepted = false;
                 st.pop();
                 continue;
@@ -433,10 +440,10 @@ void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks)
 
 	input = temp;
     if(accepted) {
-		cout<<"No Syntax Errors Found...SQL Query Accepted\n";
+		cout<<"SQL Query "<<(i+1)<<" Accepted...no errors found\n";
 	}
 	else {
-		cout<<"Errors Found in SQL Query...Rejected\n";
+		cout<<"Errors Found in SQL Query "<<(i+1)<<"...Rejected\n";
 	}
 
     // LMDT
@@ -557,7 +564,7 @@ void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks)
 
     //readFile.close();
     }
-    cout<<"tata"<<endl;
+    //cout<<"tata"<<endl;
     return;
 }
 };
