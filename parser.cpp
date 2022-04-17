@@ -461,7 +461,7 @@ void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks)
 			string newoutput = "";
 			
 			while (ss >> sym){
-				// cout << "Symbol : " << ++count << endl;
+				
 				if (isTerminal(sym)){
 					cout << " " << sym;
 					newoutput += " ";
@@ -481,17 +481,34 @@ void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks)
 						newoutput += sym;
 					}
 				
-					
-					// cout << "no " << newoutput << " ";
+				
 					continue;
 				}
 
 				// if sym is not terminal
+
 				row = distance(non_terms.begin(), non_terms.find(sym));
 				col = distance(terms.begin(), terms.find(input.front()));
 				prod_num = parse_table[row][col];
 
+				while (prod_num == -1){
+					input.pop();
+					row = distance(non_terms.begin(), non_terms.find(sym));
+				    col = distance(terms.begin(), terms.find(input.front()));
+			        prod_num = parse_table[row][col];
+				}
+				row = distance(non_terms.begin(), non_terms.find(sym));
+				col = distance(terms.begin(), terms.find(input.front()));
+				prod_num = parse_table[row][col];
+
+                
+				// cout << " r:" << sym << " " << "c:" << input.front() << " ";
+				// cout << "p:" << prod_num << " ";
+                
+			
+
 				string children = gram[prod_num].second;
+				
 
 				stringstream schild(children);
 				string child;
