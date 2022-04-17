@@ -427,7 +427,8 @@ void parse()
 		int prod_num = parse_table[row][col];
         string output = "";
 		output = gram[prod_num].second;
-
+        cout<<"Leftmost Derivation:~\n";
+        cout<<start_var<<"\n";
 		cout << "=> " << output << " " << endl << "=>";
 
         while (true){

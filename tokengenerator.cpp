@@ -32,7 +32,7 @@ string toUpper(string s)
     }
     return result;
 }
-void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,int>>> pos, unordered_map<string,stack<pair<string,pair<int,int>>>> &symbol_table)
+pair<vector<string>,vector<pair<int,int>>> generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,int>>> pos, unordered_map<string,stack<pair<string,pair<int,int>>>> &symbol_table)
 {
     string curLexeme="";
     int curState=myDFA->getStart();
@@ -41,7 +41,9 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
     vector<string> tokens;
     initialise_k(&keywords);
     initialise_fn(&fnames);
-
+    pair<vector<string>,vector<pair<int,int>>> pp;
+    vector<string> tt;
+    vector<pair<int,int>> posi;
     //code to open file for storing the tokens and token numbers
     ofstream fp("tokens.txt");
     //cout<<query<<endl;
@@ -89,7 +91,12 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
             else if(toUpper(curLexeme)=="NOT") tokenclass="not_operator";
             else if(toUpper(curLexeme)=="AND"||toUpper(curLexeme)=="OR") tokenclass="binary_logical_operator";
             tokens.push_back(tokenclass);  
-            fp<<tokens.size()<<" "<<tokenclass<<" "<<pos[curLexeme[0]].front().first<<" "<<pos[curLexeme[0]].front().second<<"\n";   
+            fp<<tokens.size()<<" "<<tokenclass<<" "<<pos[curLexeme[0]].front().first<<" "<<pos[curLexeme[0]].front().second<<"\n"; 
+            tt.push_back(tokenclass);
+            /*string po=""+pos[curLexeme[0]].front().first;
+            po=po+" ";
+            po=po+""+pos[curLexeme[0]].front().second;
+            posi.push_back(po);*/
             //put lexeme in symbol table with the tokenclass and token/line number
             //code 
            // cout<<"\n\n\n\n";
@@ -127,4 +134,6 @@ void generateTokens(dfa *myDFA,string query, unordered_map<char,queue<pair<int,i
         cout<<tokens[i]<<endl;
     }*/
     fp.close();
+    pp=make_pair(tt,posi);
+    return pp;
 }
