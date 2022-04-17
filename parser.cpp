@@ -412,7 +412,12 @@ void parse()
 	}
 
 	input = temp;
-
+    if(accepted) {
+		cout<<"No Syntax Errors Found...SQL Query Accepted\n";
+	}
+	else {
+		cout<<"Errors Found in SQL Query...Rejected\n";
+	}
 
     // LMDT
 	if (accepted){
@@ -529,12 +534,8 @@ void parse()
 		}
 	}
 
-	if(accepted) {
-		cout<<"No Syntax Errors Found...SQL Query Accepted\n";
-	}
-	else {
-		cout<<"Errors Found in SQL Query...Rejected\n";
-	}
     readFile.close();
+    cout<<"tata"<<endl;
+    return;
 }
 };

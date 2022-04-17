@@ -290,6 +290,7 @@ int main(int argc, char** argv)
         cout<<"For Query "<<(i+1)<<":\n";
         generateTokens(myDFA,result[i],pos[i],symbol_table);
         myParser->parse();
+        cout<<"hello"<<endl;
      //   cout<<result[i]<<endl;
     }
     ofstream fout;
