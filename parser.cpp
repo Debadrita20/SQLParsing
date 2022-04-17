@@ -452,129 +452,93 @@ void parse(vector<pair<vector<string>,vector<pair<int,int>>>> toks,vector<int> h
 		int row = distance(non_terms.begin(), non_terms.find(start_var));
 		int col = distance(terms.begin(), terms.find(input.front()));
 		int prod_num = parse_table[row][col];
-        string output = "";
+        queue<string> result;
+        string output = "",tok="";
 		output = gram[prod_num].second;
         cout<<"Leftmost Derivation:~\n";
         cout<<start_var<<"\n";
 		cout << "=> " << output << " " << endl << "=>";
-
+        stringstream ss(output);
+        while(ss>>tok)
+        result.push(tok);
         while (true){
-
-			stringstream ss (output);
-			string sym;
 
 			int nonTerminalPresent = 0;
 			int f = 0;
-			string newoutput = "";
+			queue<string> newoutput;
 			
-			while (ss >> sym){
+			while (!result.empty()){
 				
-				if (isTerminal(sym)){
-					cout << " " << sym;
-					newoutput += " ";
-					newoutput += sym;
-					
+				if (isTerminal(result.front())){
+					cout << " " << result.front();
+					newoutput.push(result.front());
+					result.pop();
 					continue;
 				}
 
-				if (f == 1){   // ckeck for first non terminal in the rule
-				    
-					// -------------------------------------->
-
-					if (sym != "epsilon"){
-						cout << " " << sym; 
-					
-						newoutput += " ";
-						newoutput += sym;
-					}
-				
-				
+				if (f == 1){   // check for first non terminal in the rule
+					if (result.front() != "epsilon"){
+						cout << " " << result.front(); 
+						newoutput.push(result.front());
+					}			
+				    result.pop();
 					continue;
 				}
-
 				// if sym is not terminal
-
-				row = distance(non_terms.begin(), non_terms.find(sym));
+                //cout<<"qwert"<<result.front()<<endl;
+				row = distance(non_terms.begin(), non_terms.find(result.front()));
 				col = distance(terms.begin(), terms.find(input.front()));
 				prod_num = parse_table[row][col];
-
-				while (prod_num == -1){
+                //cout<<"we"<<prod_num<<endl;
+				while (prod_num == -1||prod_num==-2){
 					input.pop();
-					row = distance(non_terms.begin(), non_terms.find(sym));
+					row = distance(non_terms.begin(), non_terms.find(result.front()));
 				    col = distance(terms.begin(), terms.find(input.front()));
 			        prod_num = parse_table[row][col];
 				}
-				row = distance(non_terms.begin(), non_terms.find(sym));
+				row = distance(non_terms.begin(), non_terms.find(result.front()));
 				col = distance(terms.begin(), terms.find(input.front()));
-				prod_num = parse_table[row][col];
-
-                
-				// cout << " r:" << sym << " " << "c:" << input.front() << " ";
-				// cout << "p:" << prod_num << " ";
-                
-			
-
+				prod_num = parse_table[row][col];              
 				string children = gram[prod_num].second;
-				
-
 				stringstream schild(children);
 				string child;
-
 				while(schild >> child){
 					if (isTerminal(child)){
 						input.pop();
-					}
-					
-					
-					else {
-						break;
-					}
+					}			
+					else break;
 				}
-
-
 				nonTerminalPresent = 1;
-
+                int colordone=0;
 				stringstream sschild(children);
-
-				// print chidren
+				// print children
 				while(sschild >> child){
 					
 	//  ------------------------------------------->
 					if (child != "epsilon"){
-						cout << " " << child;
-					    newoutput += " ";
-					    newoutput += child;
-					
+                        cout << " " << child;
+					    newoutput.push(child);					
 					}
-				}
-				
+				}				
 				f = 1;      // Encountered first non terminal
+                result.pop();
 			}
-
-			output = newoutput;
-
-			cout << endl;
-			
-            
-			stringstream scheck(newoutput);
+			result = newoutput;
+			cout << endl;	         
 			string check;
 			int c = 0;
-			while (scheck >> check){
-				if (!isTerminal(check)){
+			while (!newoutput.empty()){
+				if (!isTerminal(newoutput.front())){
+                   // cout<<newoutput.front();
 					c = 1;
 					break;
 				}
+                //cout<<newoutput.front();
+                newoutput.pop();
 			}
-
-			if (c == 0){
-				break;
-			}
-
+			if (c == 0)	break;
 			cout << "=>";
-
-			if (nonTerminalPresent == 0){
-				break;
-			}
+			if (nonTerminalPresent == 0) break;
 
 		}
 	}
