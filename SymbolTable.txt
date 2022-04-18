@@ -1,28 +1,19 @@
 The symbol table is:
-insert   INSERT_KEYWORD  1 1
+;   ;  1 32
 
-;   ;  1 35
+=   relational_operator  1 28
 
-abc   id  1 13
+2.5   float_const  1 29
 
-into   INTO_KEYWORD  1 8
+*   *  1 8
 
-k   id  1 17
+a   id  1 27
 
-12   integer_const  1 29
+from   FROM_KEYWORD  1 10
 
-23   integer_const  1 32
+rohit   id  1 15
 
-,   ,  1 31
-    ,  1 18
+select   SELECT_KEYWORD  1 1
 
-v   id  1 19
-
-(   (  1 28
-    (  1 16
-
-)   )  1 34
-    )  1 20
-
-values   VALUES_KEYWORD  1 22
+where   WHERE_KEYWORD  1 21
 

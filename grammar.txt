@@ -1,5 +1,5 @@
 Q S I D SL ATT FK TNAME WH GB OB A X RES AGG_OPER T RES' PRED PRED' MORE RHS RES'' HPRED RES''' ATTR_NAMEORDER RES'''' ORDERING COLVAL TI CONST RES''''' DL DTNAME
-; SELECT_KEYWORD * id , AS_KEYWORD fn_name ( ) FROM_KEYWORD WHERE_KEYWORD not_operator binary_logical_operator relational_operator integer_const string_const GROUP_KEYWORD BY_KEYWORD HAVING_KEYWORD ORDER_KEYWORD ASC_KEYWORD DESC_KEYWORD INSERT_KEYWORD INTO_KEYWORD VALUES_KEYWORD DELETE_KEYWORD
+; SELECT_KEYWORD * id , AS_KEYWORD fn_name ( ) FROM_KEYWORD WHERE_KEYWORD not_operator binary_logical_operator relational_operator float_const integer_const string_const GROUP_KEYWORD BY_KEYWORD HAVING_KEYWORD ORDER_KEYWORD ASC_KEYWORD DESC_KEYWORD INSERT_KEYWORD INTO_KEYWORD VALUES_KEYWORD DELETE_KEYWORD
 Q -> S ;
 Q -> I ;
 Q -> D ;
@@ -31,6 +31,7 @@ PRED' -> id relational_operator RHS
 RHS -> id
 RHS -> integer_const
 RHS -> string_const
+RHS -> float_const
 GB -> epsilon
 GB -> GROUP_KEYWORD BY_KEYWORD id RES' RES''
 RES'' -> epsilon
@@ -56,6 +57,7 @@ TI -> , id TI CONST ,
 TI -> ) VALUES_KEYWORD (
 CONST -> integer_const
 CONST -> string_const
+CONST -> float_const
 D -> DL FK DTNAME WH
 DL -> DELETE_KEYWORD
 DTNAME -> id

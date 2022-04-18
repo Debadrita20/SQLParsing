@@ -1,5 +1,5 @@
 The non terminals are: A AGG_OPER ATT ATTR_NAMEORDER COLVAL CONST D DL DTNAME FK GB HPRED I MORE OB ORDERING PRED PRED' Q RES RES' RES'' RES''' RES'''' RES''''' RHS S SL T TI TNAME WH X 
-The terminals are: $ ( ) * , ; ASC_KEYWORD AS_KEYWORD BY_KEYWORD DELETE_KEYWORD DESC_KEYWORD FROM_KEYWORD GROUP_KEYWORD HAVING_KEYWORD INSERT_KEYWORD INTO_KEYWORD ORDER_KEYWORD SELECT_KEYWORD VALUES_KEYWORD WHERE_KEYWORD binary_logical_operator fn_name id integer_const not_operator relational_operator string_const 
+The terminals are: $ ( ) * , ; ASC_KEYWORD AS_KEYWORD BY_KEYWORD DELETE_KEYWORD DESC_KEYWORD FROM_KEYWORD GROUP_KEYWORD HAVING_KEYWORD INSERT_KEYWORD INTO_KEYWORD ORDER_KEYWORD SELECT_KEYWORD VALUES_KEYWORD WHERE_KEYWORD binary_logical_operator float_const fn_name id integer_const not_operator relational_operator string_const 
 Grammar parsed from grammar file: 
 0.  Q -> S ; 
 1.  Q -> I ; 
@@ -32,34 +32,36 @@ Grammar parsed from grammar file:
 28.  RHS -> id 
 29.  RHS -> integer_const 
 30.  RHS -> string_const 
-31.  GB -> epsilon 
-32.  GB -> GROUP_KEYWORD BY_KEYWORD id RES' RES'' 
-33.  RES'' -> epsilon 
-34.  RES'' -> HAVING_KEYWORD HPRED 
-35.  HPRED -> not_operator AGG_OPER relational_operator integer_const RES''' 
-36.  HPRED -> AGG_OPER relational_operator integer_const RES''' 
-37.  RES''' -> epsilon 
-38.  RES''' -> binary_logical_operator HPRED 
-39.  OB -> epsilon 
-40.  OB -> ORDER_KEYWORD BY_KEYWORD ATTR_NAMEORDER RES'''' 
-41.  ATTR_NAMEORDER -> id ORDERING 
-42.  ORDERING -> epsilon 
-43.  ORDERING -> ASC_KEYWORD 
-44.  ORDERING -> DESC_KEYWORD 
-45.  RES'''' -> epsilon 
-46.  RES'''' -> , ATTR_NAMEORDER RES'''' 
-47.  I -> INSERT_KEYWORD INTO_KEYWORD id COLVAL 
-48.  COLVAL -> ( id TI CONST ) 
-49.  COLVAL -> VALUES_KEYWORD ( CONST RES''''' ) 
-50.  RES''''' -> epsilon 
-51.  RES''''' -> , CONST RES''''' 
-52.  TI -> , id TI CONST , 
-53.  TI -> ) VALUES_KEYWORD ( 
-54.  CONST -> integer_const 
-55.  CONST -> string_const 
-56.  D -> DL FK DTNAME WH 
-57.  DL -> DELETE_KEYWORD 
-58.  DTNAME -> id 
+31.  RHS -> float_const 
+32.  GB -> epsilon 
+33.  GB -> GROUP_KEYWORD BY_KEYWORD id RES' RES'' 
+34.  RES'' -> epsilon 
+35.  RES'' -> HAVING_KEYWORD HPRED 
+36.  HPRED -> not_operator AGG_OPER relational_operator integer_const RES''' 
+37.  HPRED -> AGG_OPER relational_operator integer_const RES''' 
+38.  RES''' -> epsilon 
+39.  RES''' -> binary_logical_operator HPRED 
+40.  OB -> epsilon 
+41.  OB -> ORDER_KEYWORD BY_KEYWORD ATTR_NAMEORDER RES'''' 
+42.  ATTR_NAMEORDER -> id ORDERING 
+43.  ORDERING -> epsilon 
+44.  ORDERING -> ASC_KEYWORD 
+45.  ORDERING -> DESC_KEYWORD 
+46.  RES'''' -> epsilon 
+47.  RES'''' -> , ATTR_NAMEORDER RES'''' 
+48.  I -> INSERT_KEYWORD INTO_KEYWORD id COLVAL 
+49.  COLVAL -> ( id TI CONST ) 
+50.  COLVAL -> VALUES_KEYWORD ( CONST RES''''' ) 
+51.  RES''''' -> epsilon 
+52.  RES''''' -> , CONST RES''''' 
+53.  TI -> , id TI CONST , 
+54.  TI -> ) VALUES_KEYWORD ( 
+55.  CONST -> integer_const 
+56.  CONST -> string_const 
+57.  CONST -> float_const 
+58.  D -> DL FK DTNAME WH 
+59.  DL -> DELETE_KEYWORD 
+60.  DTNAME -> id 
 
 First Sets for corresponding non-terminals: 
 A : fn_name id 
@@ -67,7 +69,7 @@ AGG_OPER : fn_name
 ATT : * fn_name id 
 ATTR_NAMEORDER : id 
 COLVAL : ( VALUES_KEYWORD 
-CONST : integer_const string_const 
+CONST : float_const integer_const string_const 
 D : DELETE_KEYWORD 
 DL : DELETE_KEYWORD 
 DTNAME : id 
@@ -87,7 +89,7 @@ RES'' : HAVING_KEYWORD epsilon
 RES''' : binary_logical_operator epsilon 
 RES'''' : , epsilon 
 RES''''' : , epsilon 
-RHS : id integer_const string_const 
+RHS : float_const id integer_const string_const 
 S : SELECT_KEYWORD 
 SL : SELECT_KEYWORD 
 T : * id 
@@ -126,44 +128,44 @@ RHS : ) ; GROUP_KEYWORD ORDER_KEYWORD binary_logical_operator
 S : ; 
 SL : * fn_name id 
 T : ) 
-TI : integer_const string_const 
+TI : float_const integer_const string_const 
 TNAME : ; GROUP_KEYWORD ORDER_KEYWORD WHERE_KEYWORD 
 WH : ; GROUP_KEYWORD ORDER_KEYWORD 
 X : , FROM_KEYWORD 
 
 LL(1) Parsing Table: 
- 	$	(	)	*	,	;	ASC_KEYWORD	AS_KEYWORD	BY_KEYWORD	DELETE_KEYWORD	DESC_KEYWORD	FROM_KEYWORD	GROUP_KEYWORD	HAVING_KEYWORD	INSERT_KEYWORD	INTO_KEYWORD	ORDER_KEYWORD	SELECT_KEYWORD	VALUES_KEYWORD	WHERE_KEYWORD	binary_logical_operator	fn_name	id	integer_const	not_operator	relational_operator	string_const	
-A	pop	scan	scan	scan	pop	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	8	7	scan	scan	scan	scan	
-AGG_OPER	pop	scan	scan	scan	pop	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	13	scan	scan	scan	pop	scan	
-ATT	pop	scan	scan	5	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	6	6	scan	scan	scan	scan	
-ATTR_NAMEORDER	pop	scan	scan	scan	pop	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	41	scan	scan	scan	scan	
-COLVAL	pop	48	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	49	scan	scan	scan	scan	scan	scan	scan	scan	
-CONST	pop	scan	pop	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	54	scan	scan	55	
-D	pop	scan	scan	scan	scan	pop	scan	scan	scan	56	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-DL	pop	scan	scan	scan	scan	scan	scan	scan	scan	57	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-DTNAME	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	58	scan	scan	scan	scan	
-FK	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	16	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	scan	
-GB	pop	scan	scan	scan	scan	31	scan	scan	scan	scan	scan	scan	32	scan	scan	scan	31	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-HPRED	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	scan	36	scan	scan	35	scan	scan	
-I	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	47	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-MORE	pop	scan	25	scan	scan	25	scan	scan	scan	scan	scan	scan	25	scan	scan	scan	25	scan	scan	scan	26	scan	scan	scan	scan	scan	scan	
-OB	pop	scan	scan	scan	scan	39	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	40	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-ORDERING	pop	scan	scan	scan	42	42	43	scan	scan	scan	44	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-PRED	pop	24	pop	scan	scan	pop	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	scan	scan	22	scan	23	scan	scan	
-PRED'	pop	scan	pop	scan	scan	pop	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	pop	scan	27	scan	scan	scan	scan	
-Q	pop	scan	scan	scan	scan	scan	scan	scan	scan	2	scan	scan	scan	scan	1	scan	scan	0	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-RES	pop	scan	scan	scan	10	scan	scan	scan	scan	scan	scan	9	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-RES'	pop	scan	scan	scan	19	18	scan	scan	scan	scan	scan	scan	18	18	scan	scan	18	scan	scan	18	scan	scan	scan	scan	scan	scan	scan	
-RES''	pop	scan	scan	scan	scan	33	scan	scan	scan	scan	scan	scan	scan	34	scan	scan	33	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-RES'''	pop	scan	scan	scan	scan	37	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	37	scan	scan	scan	38	scan	scan	scan	scan	scan	scan	
-RES''''	pop	scan	scan	scan	46	45	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-RES'''''	pop	scan	50	scan	51	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-RHS	pop	scan	pop	scan	scan	pop	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	pop	scan	28	29	scan	scan	30	
-S	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	3	scan	scan	scan	scan	scan	scan	scan	scan	scan	
-SL	pop	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	4	scan	scan	scan	pop	pop	scan	scan	scan	scan	
-T	pop	scan	pop	14	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	15	scan	scan	scan	scan	
-TI	pop	scan	53	scan	52	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	pop	
-TNAME	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	pop	scan	scan	17	scan	scan	scan	scan	
-WH	pop	scan	scan	scan	scan	20	scan	scan	scan	scan	scan	scan	20	scan	scan	scan	20	scan	scan	21	scan	scan	scan	scan	scan	scan	scan	
-X	pop	scan	scan	scan	11	scan	scan	12	scan	scan	scan	11	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+ 	$	(	)	*	,	;	ASC_KEYWORD	AS_KEYWORD	BY_KEYWORD	DELETE_KEYWORD	DESC_KEYWORD	FROM_KEYWORD	GROUP_KEYWORD	HAVING_KEYWORD	INSERT_KEYWORD	INTO_KEYWORD	ORDER_KEYWORD	SELECT_KEYWORD	VALUES_KEYWORD	WHERE_KEYWORD	binary_logical_operator	float_const	fn_name	id	integer_const	not_operator	relational_operator	string_const	
+A	pop	scan	scan	scan	pop	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	8	7	scan	scan	scan	scan	
+AGG_OPER	pop	scan	scan	scan	pop	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	13	scan	scan	scan	pop	scan	
+ATT	pop	scan	scan	5	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	6	6	scan	scan	scan	scan	
+ATTR_NAMEORDER	pop	scan	scan	scan	pop	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	42	scan	scan	scan	scan	
+COLVAL	pop	49	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	50	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+CONST	pop	scan	pop	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	57	scan	scan	55	scan	scan	56	
+D	pop	scan	scan	scan	scan	pop	scan	scan	scan	58	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+DL	pop	scan	scan	scan	scan	scan	scan	scan	scan	59	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+DTNAME	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	60	scan	scan	scan	scan	
+FK	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	16	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	scan	
+GB	pop	scan	scan	scan	scan	32	scan	scan	scan	scan	scan	scan	33	scan	scan	scan	32	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+HPRED	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	37	scan	scan	36	scan	scan	
+I	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	48	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+MORE	pop	scan	25	scan	scan	25	scan	scan	scan	scan	scan	scan	25	scan	scan	scan	25	scan	scan	scan	26	scan	scan	scan	scan	scan	scan	scan	
+OB	pop	scan	scan	scan	scan	40	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	41	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+ORDERING	pop	scan	scan	scan	43	43	44	scan	scan	scan	45	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+PRED	pop	24	pop	scan	scan	pop	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	22	scan	23	scan	scan	
+PRED'	pop	scan	pop	scan	scan	pop	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	27	scan	scan	scan	scan	
+Q	pop	scan	scan	scan	scan	scan	scan	scan	scan	2	scan	scan	scan	scan	1	scan	scan	0	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+RES	pop	scan	scan	scan	10	scan	scan	scan	scan	scan	scan	9	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+RES'	pop	scan	scan	scan	19	18	scan	scan	scan	scan	scan	scan	18	18	scan	scan	18	scan	scan	18	scan	scan	scan	scan	scan	scan	scan	scan	
+RES''	pop	scan	scan	scan	scan	34	scan	scan	scan	scan	scan	scan	scan	35	scan	scan	34	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+RES'''	pop	scan	scan	scan	scan	38	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	38	scan	scan	scan	39	scan	scan	scan	scan	scan	scan	scan	
+RES''''	pop	scan	scan	scan	47	46	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+RES'''''	pop	scan	51	scan	52	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+RHS	pop	scan	pop	scan	scan	pop	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	scan	pop	31	scan	28	29	scan	scan	30	
+S	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	3	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
+SL	pop	scan	scan	pop	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	4	scan	scan	scan	scan	pop	pop	scan	scan	scan	scan	
+T	pop	scan	pop	14	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	15	scan	scan	scan	scan	
+TI	pop	scan	54	scan	53	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	pop	scan	scan	pop	scan	scan	pop	
+TNAME	pop	scan	scan	scan	scan	pop	scan	scan	scan	scan	scan	scan	pop	scan	scan	scan	pop	scan	scan	pop	scan	scan	scan	17	scan	scan	scan	scan	
+WH	pop	scan	scan	scan	scan	20	scan	scan	scan	scan	scan	scan	20	scan	scan	scan	20	scan	scan	21	scan	scan	scan	scan	scan	scan	scan	scan	
+X	pop	scan	scan	scan	11	scan	scan	12	scan	scan	scan	11	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	scan	
 
